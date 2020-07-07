@@ -126,7 +126,7 @@ EDHOC verification +                                  |
 
 The first possibility is to send the EDHOC message 3 inside an OSCORE protected CoAP message.
 The request is in practice the OSCORE CoAP Request from {{fig-non-combined}}, sent to the protected resource andpoint and with correct CoAP method and options, with the addition that it also transports EDHOC message 3.
-As EDHOC message 3 is too large for being contained in a CoAP Option, it would have to be transported in the CoAP payload.
+As EDHOC message 3 may be too large to be contained in a CoAP Option, e.g. if containing a large public key certificate chain, it would have to be transported in the CoAP payload.
 The payload is formatted as a CBOR sequence of two CBOR wrapped items: the EDHOC message 3 and the OSCORE ciphertext, in this order.
 
 When receiving such a request, the Server needs to execute the following processing, additional to EDHOC, OSCORE and CoAP processing:
