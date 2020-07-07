@@ -24,7 +24,7 @@ normative:
   RFC7252:
   RFC8174:
   RFC8613:
-  I-D.selander-lake-edhoc:
+  I-D.ietf-lake-edhoc:
   I-D.ietf-cbor-7049bis:
   I-D.ietf-lake-reqs:
 
@@ -40,12 +40,12 @@ TODO Abstract
 
 # Introduction
 
-This document presents possible optimization options to combine the EDHOC protocol {{I-D.selander-lake-edhoc}}, run over CoAP {{RFC7252}}, with the first subsequent OSCORE {{RFC8613}} transaction. 
+This document presents possible optimization options to combine the EDHOC protocol {{I-D.ietf-lake-edhoc}}, run over CoAP {{RFC7252}}, with the first subsequent OSCORE {{RFC8613}} transaction. 
 This allows for a minimum number of round trips necessary to setup the OSCORE security context and complete an OSCORE transaction, for example when an IoT device gets configured in a network for the first time.
 
 The number of round trips for a protocol implies a minimum for the number of flights, which can have a substantial impact on performance with certain radio technologies as discussed in Section 2.11 of {{I-D.ietf-lake-reqs}}. 
 Without this optimization it is not possible even in theory to obtain the minimum number of flights. 
-With this optimization it is possible also in practice since the last message of the EDHOC protocol can be made relatively small (see Section 1 of {{I-D.selander-lake-edhoc}}) and allows additional OSCORE protected CoAP data within target MTU sizes {{I-D.ietf-lake-reqs}}.
+With this optimization it is possible also in practice since the last message of the EDHOC protocol can be made relatively small (see Section 1 of {{I-D.ietf-lake-edhoc}}) and allows additional OSCORE protected CoAP data within target MTU sizes {{I-D.ietf-lake-reqs}}.
 
 The goal of this draft is to gather opinions on each option, and develop only one of these options.
 
@@ -53,18 +53,18 @@ The goal of this draft is to gather opinions on each option, and develop only on
 
 {::boilerplate bcp14}
 
-The reader is expected to be familiar with terms and concepts of {{RFC7252}}, {{RFC8613}} and {{I-D.selander-lake-edhoc}}.
+The reader is expected to be familiar with terms and concepts of {{RFC7252}}, {{RFC8613}} and {{I-D.ietf-lake-edhoc}}.
 
 # Background
 
 EDHOC is a 3 message key exchange protocol.
-Section 7.1 of {{I-D.selander-lake-edhoc}} specifes how to transport EDHOC over CoAP: the EDHOC data (referred to as "EDHOC messages") are transported in the payload of CoAP requests and responses.
+Section 7.1 of {{I-D.ietf-lake-edhoc}} specifes how to transport EDHOC over CoAP: the EDHOC data (referred to as "EDHOC messages") are transported in the payload of CoAP requests and responses.
 More specifically, the Initiator, acting as CoAP Client, sends a POST request to a reserved resource at the Responder, acting as CoAP Server.
 This triggers the EDHOC exchange on the CoAP Server, which replies with 2.04 (Changed) Response containing EDHOC message 2.
 The EDHOC message 3 is also sent by the CoAP Client in a CoAP POST request to the same resource used for EDHOC message 1.
 The Content-Format of these CoAP messages is set to "application/edhoc".
 
-After this exchange takes place, and after successful verifications specified in the EDHOC protocol, Client and Server derive the OSCORE Security Context, as specified in Section 7.1.1 of {{I-D.selander-lake-edhoc}}.
+After this exchange takes place, and after successful verifications specified in the EDHOC protocol, Client and Server derive the OSCORE Security Context, as specified in Section 7.1.1 of {{I-D.ietf-lake-edhoc}}.
 They are then ready to use OSCORE.
 
 This sequential way of running EDHOC and then OSCORE is specified in {{fig-non-combined}}.
