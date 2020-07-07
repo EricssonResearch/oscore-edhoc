@@ -92,9 +92,9 @@ OSCORE Sec Ctx                                OSCORE Sec Ctx
 ~~~~~~~~~~~~~~~~~
 {: #fig-non-combined title="EDHOC and OSCORE run sequentially" artwork-align="center"}
 
-The number of roundtrips can be minimized: after receiving EDHOC message 2, the CoAP Client has all the information needed to derive the OSCORE Sec Ctx before sending EDHOC message 3. 
+The number of roundtrips can be minimized: after receiving EDHOC message 2, the CoAP Client has all the information needed to derive the OSCORE Security Context before sending EDHOC message 3. 
 That means that it can potentially send at the same time both EDHOC message 3 and the subsequent OSCORE Request.
-On a semantyc level, this approach requires in practice to send two separate 
+On a semantic level, this approach requires in practice to send two separate 
 REST requests at the same time.
 Defining the specific details of how to transport the data and order of processing is the goal of this specification.
 
@@ -122,7 +122,7 @@ EDHOC verification +                                  |
 ~~~~~~~~~~~~~~~~~
 {: #fig-combined title="EDHOC and OSCORE combined" artwork-align="center"}
 
-# EDHOC in OSCORE Protected CoAP {#edhoc-in-oscore}
+# EDHOC in OSCORE {#edhoc-in-oscore}
 
 The first possibility is to send the EDHOC message 3 inside an OSCORE protected CoAP message.
 The request is in practice the OSCORE CoAP Request from {{fig-non-combined}}, sent to the protected resource andpoint and with correct CoAP method and options, with the addition that it also transports EDHOC message 3.
@@ -156,7 +156,7 @@ The Option is critical, Safe-to-Forward, and part of the Cache-Key.
 
 The Option value is always empty. If any value is sent, the value is simply discarded.
 
-The Option must occurr at most once.
+The Option must occur at most once.
 
 The Option is of Class U for OSCORE.
 
@@ -175,12 +175,12 @@ Description: Set to 1 if the payload is a sequence of EDHOC data and OSCORE payl
 Reference: this document
 
 
-# OSCORE Request in a COAP message
+# OSCORE in EDHOC
 
 <!-- Jim preferred option -->
 
 Instead of transporting the EDHOC message inside an OSCORE message, the OSCORE protected data could be transported in a EDHOC message.
-The request is in practice the CoAP POST Request containing EDHOC message 3 from {{fig-non-combined}}, sent to the unprotected resource andpoint reserved to EDHOC processing, with the addition that it also transports the OSCORE Option and Ciphertext.
+The request is in practice the CoAP POST Request containing EDHOC message 3 from {{fig-non-combined}}, sent to the unprotected resource endpoint reserved to EDHOC processing, with the addition that it also transports the OSCORE Option and ciphertext.
 The OSCORE Option and ciphertext contain all the information to reconstruct the original OSCORE Request, including CoAP method, options and payload.
 Both OSCORE Option, EDHOC message_3 and ciphertext would have to be transported in the CoAP payload.
 The payload is formatted as a CBOR sequence of three CBOR wrapped items: the EDHOC message 3, the OSCORE Option and the OSCORE ciphertext, in this order.
