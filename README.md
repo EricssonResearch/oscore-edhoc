@@ -2,9 +2,9 @@
 
 This is the working area for the individual Internet-Draft, "Implementing EDHOC and OSCORE".
 
-* [Editor's Copy](https://fpalombini.github.io/oscore-edhoc/#go.draft-palombini-core-oscore-edhoc.html)
+* [Editor's Copy](https://EricssonResearch.github.io/oscore-edhoc/#go.draft-palombini-core-oscore-edhoc.html)
 * [Individual Draft](https://tools.ietf.org/html/draft-palombini-core-oscore-edhoc)
-* [Compare Editor's Copy to Individual Draft](https://fpalombini.github.io/oscore-edhoc/#go.draft-palombini-core-oscore-edhoc.diff)
+* [Compare Editor's Copy to Individual Draft](https://EricssonResearch.github.io/oscore-edhoc/#go.draft-palombini-core-oscore-edhoc.diff)
 
 ## Building the Draft
 
@@ -21,4 +21,4 @@ This requires that you have the necessary software installed.  See
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/fpalombini/oscore-edhoc/blob/master/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/EricssonResearch/oscore-edhoc/blob/master/CONTRIBUTING.md).
