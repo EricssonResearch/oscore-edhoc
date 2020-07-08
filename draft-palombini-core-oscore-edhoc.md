@@ -22,16 +22,16 @@ author:
     ins: M. Tiloca
     name: Marco Tiloca
     org: RISE AB
-    email: marco.tiloca@ri.se 
+    email: marco.tiloca@ri.se
  -
     ins: R. Hoeglund
     name: Rikard Hoeglund
     org: RISE AB
-    email: marco.tiloca@ri.se 
+    email: rikard.hoglund@ri.se
  -
     ins: S. Hristozov
     name: Stefan Hristozov
-    organization: Frauhofer AISEC
+    organization: Fraunhofer AISEC
     email: stefan.hristozov@aisec.fraunhofer.de  
  -
     ins: G. Selander
@@ -60,36 +60,33 @@ This documents defines possible optimization approaches for combining the EDHOC 
 
 # Introduction
 
-This document presents possible optimization approaches to combine the EDHOC protocol {{I-D.ietf-lake-edhoc}}, when running over CoAP {{RFC7252}}, with the first subsequent OSCORE {{RFC8613}} transaction. 
-This allows for a minimum number of round trips necessary to setup the OSCORE security context and complete an OSCORE transaction, for example when an IoT device gets configured in a network for the first time.
+This document presents possible optimization approaches to combine the EDHOC key exchange protocol {{I-D.ietf-lake-edhoc}}, when running over CoAP {{RFC7252}}, with the first subsequent OSCORE {{RFC8613}} transaction.
 
-The number of round trips for a protocol implies a minimum for the number of flights, which can have a substantial impact on performance with certain radio technologies as discussed in Section 2.11 of {{I-D.ietf-lake-reqs}}. 
-Without this optimization it is not possible even in theory to obtain the minimum number of flights. 
-With this optimization it is possible also in practice since the last message of the EDHOC protocol can be made relatively small (see Section 1 of {{I-D.ietf-lake-edhoc}}) and allows additional OSCORE protected CoAP data within target MTU sizes {{I-D.ietf-lake-reqs}}.
+This allows for a minimum number of round trips necessary to setup the OSCORE Security Context and complete an OSCORE transaction, for example when an IoT device gets configured in a network for the first time.
 
-The goal of this document is to detail how to transport the data and the order of processing, gather opinions on the different approaches, and select only one of those.
+The number of protocol round trips implies a minimum number of flights, which can have a substantial impact on performance with certain radio technologies as discussed in Section 2.11 of {{I-D.ietf-lake-reqs}}.
+
+Without this optimization, it is not possible, not even in theory, to achieve the minimum number of flights.
+
+This optimization enables it and makes it possible also in practice, since the last message of the EDHOC protocol can be made relatively small (see Section 1 of {{I-D.ietf-lake-edhoc}}), thus allowing additional OSCORE protected CoAP data within target MTU sizes {{I-D.ietf-lake-reqs}}.
+
+The goal of this document is to provide details on how to transport the data and the order of their processing; gather opinions on the different approaches; and select only one of those.
 
 ## Terminology
 
 {::boilerplate bcp14}
 
-The reader is expected to be familiar with terms and concepts of {{RFC7252}}, {{RFC8613}} and {{I-D.ietf-lake-edhoc}}.
+The reader is expected to be familiar with terms and concepts defined in CoAP {{RFC7252}}, CBOR {{I-D.ietf-cbor-7049bis}}, OSCORE {{RFC8613}} and EDHOC {{I-D.ietf-lake-edhoc}}.
 
 # Background
 
-EDHOC is a 3-message key exchange protocol.
-Section 7.1 of {{I-D.ietf-lake-edhoc}} specifes how to transport EDHOC over CoAP: the EDHOC data (referred to as "EDHOC messages") are transported in the payload of CoAP requests and responses.
-This draft deals with the case of the Initiator acting as CoAP Client and Responder acting as CoAP Server. 
-The CoAP client sends a POST request containing EDHOC message 1 to a reserved resource at the CoAP server.
-This triggers the EDHOC exchange on the CoAP Server, which replies with a 2.04 (Changed) Response containing EDHOC message 2.
-The EDHOC message 3 is also sent by the CoAP Client in a CoAP POST request to the same resource used for EDHOC message 1.
-The Content-Format of these CoAP messages is set to "application/edhoc".
+EDHOC is a 3-message key exchange protocol. Section 7.1 of {{I-D.ietf-lake-edhoc}} specifes how to transport EDHOC over CoAP: the EDHOC data (referred to as "EDHOC messages") are transported in the payload of CoAP requests and responses.
 
-After this exchange takes place, and after successful verifications specified in the EDHOC protocol, Client and Server derive the OSCORE Security Context, as specified in Section 7.1.1 of {{I-D.ietf-lake-edhoc}}.
-They are then ready to use OSCORE.
+This draft deals with the case of the Initiator acting as CoAP Client and the Responder acting as CoAP Server. That is, the CoAP Client sends a POST request containing the EDHOC message 1 to a reserved resource at the CoAP Server. This triggers the EDHOC exchange on the CoAP Server, which replies with a 2.04 (Changed) Response containing the EDHOC message 2. Finally, the EDHOC message 3 is sent by the CoAP Client in a CoAP POST request to the same resource used for the EDHOC message 1. The Content-Format of these CoAP messages is set to "application/edhoc".
 
-This sequential way of running EDHOC and then OSCORE is specified in {{fig-non-combined}}.
-As shown, this mechanism is executed in 3 roundtrips.
+After this exchange takes place, and after successful verifications specified in the EDHOC protocol, the Client and Server derive the OSCORE Security Context, as specified in Section 7.1.1 of {{I-D.ietf-lake-edhoc}}. Then, they are then ready to use OSCORE.
+
+This sequential way of running EDHOC and then OSCORE is specified in {{fig-non-combined}}. As shown in the figure, this mechanism is executed in 3 round trips.
 
 ~~~~~~~~~~~~~~~~~
    CoAP Client                                  CoAP Server
@@ -113,13 +110,13 @@ OSCORE Sec Ctx                                OSCORE Sec Ctx
 ~~~~~~~~~~~~~~~~~
 {: #fig-non-combined title="EDHOC and OSCORE run sequentially" artwork-align="center"}
 
-The number of roundtrips can be minimized: after receiving EDHOC message 2, the CoAP Client has all the information needed to derive the OSCORE Security Context before sending EDHOC message 3. 
-That means that it can potentially send at the same time both EDHOC message 3 and the subsequent OSCORE Request.
-On a semantic level, this approach requires in practice to send two separate 
-REST requests at the same time.
-Defining the specific details of how to transport the data and order of processing is the goal of this specification.
+The number of roundtrips can be minimized: after receiving the EDHOC message 2, the CoAP Client has all the information needed to derive the OSCORE Security Context before sending the EDHOC message 3.
+
+This means that the Client can potentially send at the same time both the EDHOC message 3 and the subsequent OSCORE Request. On a semantic level, this approach practically requires to send two separate REST requests at the same time.
 
 The high level message flow of running EDHOC and OSCORE combined is shown in {{fig-combined}}.
+
+Defining the specific details of how to transport the data and of their processing order is the goal of this specification.
 
 ~~~~~~~~~~~~~~~~~
    CoAP Client                                  CoAP Server
