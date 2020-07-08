@@ -17,7 +17,20 @@ author:
     ins: F. Palombini
     name: Francesca Palombini
     organization: Ericsson
+    street: Torshamnsgatan 23
+    city: Kista
+    code: SE-16440 Stockholm
+    country: Sweden
     email: francesca.palombini@ericsson.com
+ -
+    ins: M. Tiloca
+    name: Marco Tiloca
+    org: RISE AB
+    street: Isafjordsgatan 22
+    city: Kista
+    code: SE-16440 Stockholm
+    country: Sweden
+    email: marco.tiloca@ri.se    
 
 normative:
   RFC2119:
