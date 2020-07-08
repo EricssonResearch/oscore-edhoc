@@ -54,7 +54,7 @@ informative:
 
 --- abstract
 
-TODO Abstract
+This documents defines possible optimization approaches for combining the EDHOC key exchange protocol run over CoAP with the first subsequent OSCORE transaction. This combination reduces the number of round trips required to set up an OSCORE Security Context and complete an OSCORE transaction using that context.
 
 --- middle
 
