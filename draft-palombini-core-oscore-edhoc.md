@@ -1,5 +1,5 @@
 ---
-title: "Implementing EDHOC and OSCORE"
+title: "Combining EDHOC and OSCORE"
 abbrev: "EDHOC + OSCORE"
 docname: draft-palombini-core-oscore-edhoc-latest
 cat: std
@@ -60,14 +60,14 @@ TODO Abstract
 
 # Introduction
 
-This document presents possible optimization options to combine the EDHOC protocol {{I-D.ietf-lake-edhoc}}, when running over CoAP {{RFC7252}}, with the first subsequent OSCORE {{RFC8613}} transaction. 
+This document presents possible optimization approaches to combine the EDHOC protocol {{I-D.ietf-lake-edhoc}}, when running over CoAP {{RFC7252}}, with the first subsequent OSCORE {{RFC8613}} transaction. 
 This allows for a minimum number of round trips necessary to setup the OSCORE security context and complete an OSCORE transaction, for example when an IoT device gets configured in a network for the first time.
 
 The number of round trips for a protocol implies a minimum for the number of flights, which can have a substantial impact on performance with certain radio technologies as discussed in Section 2.11 of {{I-D.ietf-lake-reqs}}. 
 Without this optimization it is not possible even in theory to obtain the minimum number of flights. 
 With this optimization it is possible also in practice since the last message of the EDHOC protocol can be made relatively small (see Section 1 of {{I-D.ietf-lake-edhoc}}) and allows additional OSCORE protected CoAP data within target MTU sizes {{I-D.ietf-lake-reqs}}.
 
-The goal of this draft is to gather opinions on each option, and develop only one of these options.
+The goal of this document is to detail how to transport the data and the order of processing, gather opinions on the different approaches, and select only one of those.
 
 ## Terminology
 
@@ -145,14 +145,19 @@ EDHOC verification +                                  |
 
 # EDHOC in OSCORE {#edhoc-in-oscore}
 
-The first possibility is to send the EDHOC message 3 inside an OSCORE message (= OSCORE protected CoAP message).
-The request is in practice the OSCORE CoAP Request from {{fig-non-combined}}, sent to the protected resource endpoint and with the correct CoAP method and options, with the addition that it also transports EDHOC message 3.
+The first approach consists in sending the EDHOC message 3 inside an OSCORE message (i.e., an OSCORE protected CoAP message).
+
+The request is in practice the OSCORE CoAP Request from {{fig-non-combined}}, sent to a protected resource and with the correct CoAP method and options, with the addition that it also transports EDHOC message 3.
+
 As EDHOC message 3 may be too large to be contained in a CoAP Option, e.g. if containing a large public key certificate chain, it would have to be transported in the CoAP payload.
-The payload is formatted as a CBOR sequence of two CBOR wrapped items: the EDHOC message 3 and the OSCORE ciphertext, in this order.
+
+The payload is formatted as a CBOR sequence of two CBOR wrapped items: the EDHOC message 3 and the OSCORE ciphertext, in this order. Note that the OSCORE ciphertext is not computed over EDHOC message 3, which is not protected by OSCORE.
+
+The use of this approach is indicated by a signalling information, which can be either a new EDHOC option (see {{sign-1}}) or the OSCORE option with a particular flag bit set (see {{sign-2}}).
 
 When receiving such a request, the Server needs to execute the following processing, additional to EDHOC, OSCORE and CoAP processing:
 
-1. Parse the signalling option to identify that this is an OSCORE + EDHOC request (more in {{sign-1}} and {{sign-2}}).
+1. Check the signalling information to identify that this is an OSCORE + EDHOC request.
 
 2. Extract the EDHOC message 3 from the payload.
 
@@ -162,7 +167,7 @@ When receiving such a request, the Server needs to execute the following process
 
 5. Process the CoAP request.
 
-The following sections describe 2 ways of signalling that the EDHOC message is transported in the OSCORE message. In a next update of these document, we will 
+The following sections describe 2 ways of signalling that the EDHOC message is transported in the OSCORE message.
 
 ## Signalling in a New EDHOC Option {#sign-1}
 
@@ -201,14 +206,18 @@ Reference: this document
 <!-- Jim preferred option -->
 
 Instead of transporting the EDHOC message inside an OSCORE message, the OSCORE protected data could be transported in a EDHOC message.
-The request is in practice the CoAP POST Request containing EDHOC message 3 from {{fig-non-combined}}, sent to the unprotected resource endpoint reserved to EDHOC processing, with the addition that it also transports the OSCORE Option and ciphertext.
-The OSCORE Option and ciphertext contain all the information to reconstruct the original OSCORE Request, including CoAP method, options and payload.
-Both OSCORE Option, EDHOC message_3 and ciphertext would have to be transported in the CoAP payload.
+
+The request is in practice the CoAP POST Request containing EDHOC message 3 from {{fig-non-combined}}, sent to the unprotected resource reserved to EDHOC processing, with the addition that it also transports the OSCORE Option and ciphertext.
+
+The OSCORE Option and ciphertext contain all the information to reconstruct the original OSCORE Request, including CoAP method, options and payload. Both OSCORE Option, EDHOC message_3 and ciphertext would have to be transported in the CoAP payload.
+
 The payload is formatted as a CBOR sequence of three CBOR wrapped items: the EDHOC message 3, the OSCORE Option and the OSCORE ciphertext, in this order.
+
+The use of this approach is indicated by a signalling information, which can be either a new EDHOC+OSCORE option (see {{sign-3}}) or the particular payload structure (see {{sign-4}}).
 
 When receiving such a request, the Server needs to execute the following processing, additional to EDHOC, OSCORE and CoAP processing:
 
-1. Parse the signalling option to identify that this is an EDHOC + OSCORE request (more in {{sign-3}} and {{sign-4}}).
+1. Check the signalling information to identify that this is an EDHOC + OSCORE request (more in {{sign-3}} and {{sign-4}}).
 
 2. Extract the EDHOC message 3 from the payload.
 
@@ -222,11 +231,12 @@ When receiving such a request, the Server needs to execute the following process
 
 This processing requires one more step, as the server must build the protected request from the payload before being able to process it.
 
-## Signalling in a New EDHOC Option {#sign-3}
+## Signalling in a New EDHOC+OSCORE Option {#sign-3}
 
-One way to signal that the Server is to build and process the OSCORE request after EDHOC processing is to define a new CoAP Option, called the EDHOC Option.
+One way to signal that the Server is to build and process the OSCORE request after EDHOC processing is to define a new CoAP Option, called the EDHOC+OSCORE Option.
 
 This Option being present (either in a request or response) means the message contains OSCORE option value and ciphertext in the payload, that must be extracted and processed after the EDHOC processing.
+
 The OSCORE option and ciphertext are to be extracted from the CoAP payload as the CBOR wrapped second and third element of a CBOR sequence.
 
 The Option is critical, Safe-to-Forward, and part of the Cache-Key.
@@ -246,7 +256,9 @@ The Client would be able to distinguish based on the number of CBOR elements in 
 
 # Security Considerations
 
-TODO Security
+The same security considerations from OSCORE {{RFC8613}} and EDHOC {{I-D.ietf-lake-edhoc}} hold for this document.
+
+TODO (more considerations)
 
 # IANA Considerations
 
