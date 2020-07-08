@@ -156,7 +156,7 @@ The usage of this approach is indicated by a signalling information, which can b
 
 When receiving such a request, the Server needs to perform the following processing, in addition to the EDHOC, OSCORE and CoAP processing:
 
-1. Check the signalling information to identify that this is an OSCORE + EDHOC request.
+1. Check the signalling information to identify that this is an OSCORE + EDHOC request (more in {{sign-1}} and {{sign-2}}).
 
 2. Extract the EDHOC message 3 from the payload.
 
@@ -204,17 +204,19 @@ Reference: this document
 
 <!-- Jim preferred option -->
 
-Instead of transporting the EDHOC message inside an OSCORE message, the OSCORE protected data could be transported in a EDHOC message.
+Instead of transporting the EDHOC message inside an OSCORE message, the second approach consists in transporting the OSCORE protected data in an EDHOC message.
 
-The request is in practice the CoAP POST Request containing EDHOC message 3 from {{fig-non-combined}}, sent to the unprotected resource reserved to EDHOC processing, with the addition that it also transports the OSCORE Option and ciphertext.
+The request is in practice the CoAP POST Request containing the EDHOC message 3 from {{fig-non-combined}}, sent to the unprotected resource reserved to EDHOC processing, with the addition that it also transports the OSCORE Option and ciphertext of the original OSCORE Request.
 
-The OSCORE Option and ciphertext contain all the information to reconstruct the original OSCORE Request, including CoAP method, options and payload. Both OSCORE Option, EDHOC message_3 and ciphertext would have to be transported in the CoAP payload.
+The OSCORE Option and ciphertext contain all the information to reconstruct the original OSCORE Request, including CoAP method, options and payload. The OSCORE Option, the EDHOC message 3 and the ciphertext are transported in the CoAP payload.
 
 The payload is formatted as a CBOR sequence of three CBOR wrapped items: the EDHOC message 3, the OSCORE Option and the OSCORE ciphertext, in this order.
 
-The use of this approach is indicated by a signalling information, which can be either a new EDHOC+OSCORE option (see {{sign-3}}) or the particular payload structure (see {{sign-4}}).
+Note that the OSCORE ciphertext is not computed over the EDHOC message 3, which is not protected by OSCORE. That is, the client first prepares the OSCORE protected CoAP Request. Then, it considers the OSCORE option and ciphertext to be included in the payload of the request to send, as defined above.
 
-When receiving such a request, the Server needs to execute the following processing, additional to EDHOC, OSCORE and CoAP processing:
+The usage of this approach is indicated by a signalling information, which can be either a new EDHOC+OSCORE option (see {{sign-3}}) or the particular structure of the request payload (see {{sign-4}}).
+
+When receiving such a request, the Server needs to execute the following processing, in addition to the EDHOC, OSCORE and CoAP processing:
 
 1. Check the signalling information to identify that this is an EDHOC + OSCORE request (more in {{sign-3}} and {{sign-4}}).
 
@@ -222,19 +224,19 @@ When receiving such a request, the Server needs to execute the following process
 
 3. Execute the EDHOC processing, including verifications and OSCORE Security Context derivation.
 
-4. Extract the OSCORE Option value and ciphertext from the payload and reconstruct the OSCORE protected CoAP request.
+4. Extract the OSCORE Option value and ciphertext from the payload and reconstruct the OSCORE protected CoAP Request.
 
 5. Decrypt and verify the reconstructed OSCORE protected CoAP request as defined by OSCORE.
 
-6. Process the CoAP requests.
+6. Process the CoAP request.
 
-This processing requires one more step, as the server must build the protected request from the payload before being able to process it.
+Compared to the approach in {{edhoc-in-oscore}}, this processing requires one more step, as the Server must first build the OSCORE protected CoAP request from the payload before being able to process it.
 
 ## Signalling in a New EDHOC+OSCORE Option {#sign-3}
 
-One way to signal that the Server is to build and process the OSCORE request after EDHOC processing is to define a new CoAP Option, called the EDHOC+OSCORE Option.
+One way to signal that the Server is to build and process the OSCORE protected CoAP request after the EDHOC processing is to define a new CoAP Option, called the EDHOC+OSCORE Option.
 
-This Option being present (either in a request or response) means the message contains OSCORE option value and ciphertext in the payload, that must be extracted and processed after the EDHOC processing.
+This Option being present (either in a request or response) means that the message contains an OSCORE option value and ciphertext in the payload, that must be extracted and processed after the EDHOC processing.
 
 The OSCORE option and ciphertext are to be extracted from the CoAP payload as the CBOR wrapped second and third element of a CBOR sequence.
 
@@ -248,10 +250,9 @@ The Option is of Class U for OSCORE.
 
 ## Predetermined {#sign-4}
 
-Another way to support the combined mode and to mandate that the Server is to build and process the OSCORE request after EDHOC processing is to set up pre-determined policies in place in both the Client and Server.
+Another way to signal this approach and to mandate that the Server is to build and process the OSCORE protected CoAP request after the EDHOC processing is to set up pre-determined policies on both the Client and Server.
 
-A Client may be set up to support at the same time receiving only EDHOC message 3 or both EDHOC message 3 and OSCORE Option and ciphertext in the request.
-The Client would be able to distinguish based on the number of CBOR elements in the payload, and process the message accordingly.
+A Client may be set up to support at the same time receiving only the EDHOC message 3 or both the EDHOC message 3 and the OSCORE Option and ciphertext in the request. The Client would be able to distinguish the two cases based on the number of CBOR elements in the payload, and process the message accordingly.
 
 # Security Considerations
 
