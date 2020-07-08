@@ -251,4 +251,6 @@ This document has no IANA actions.
 # Acknowledgments
 {:numbered="false"}
 
-Jim Schaad, Malisa Vucinic, Klaus Hartke, Christian Amsuess
+The authors sincerely thank Christian Amsuess, Klaus Hartke, Jim Schaad and Malisa Vucinic for their feedback and comments.
+
+The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC.
