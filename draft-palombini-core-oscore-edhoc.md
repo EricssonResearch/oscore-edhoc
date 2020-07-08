@@ -53,7 +53,7 @@ TODO Abstract
 
 # Introduction
 
-This document presents possible optimization options to combine the EDHOC protocol {{I-D.ietf-lake-edhoc}}, run over CoAP {{RFC7252}}, with the first subsequent OSCORE {{RFC8613}} transaction. 
+This document presents possible optimization options to combine the EDHOC protocol {{I-D.ietf-lake-edhoc}}, when running over CoAP {{RFC7252}}, with the first subsequent OSCORE {{RFC8613}} transaction. 
 This allows for a minimum number of round trips necessary to setup the OSCORE security context and complete an OSCORE transaction, for example when an IoT device gets configured in a network for the first time.
 
 The number of round trips for a protocol implies a minimum for the number of flights, which can have a substantial impact on performance with certain radio technologies as discussed in Section 2.11 of {{I-D.ietf-lake-reqs}}. 
@@ -73,7 +73,7 @@ The reader is expected to be familiar with terms and concepts of {{RFC7252}}, {{
 EDHOC is a 3 message key exchange protocol.
 Section 7.1 of {{I-D.ietf-lake-edhoc}} specifes how to transport EDHOC over CoAP: the EDHOC data (referred to as "EDHOC messages") are transported in the payload of CoAP requests and responses.
 More specifically, the Initiator, acting as CoAP Client, sends a POST request to a reserved resource at the Responder, acting as CoAP Server.
-This triggers the EDHOC exchange on the CoAP Server, which replies with 2.04 (Changed) Response containing EDHOC message 2.
+This triggers the EDHOC exchange on the CoAP Server, which replies with a 2.04 (Changed) Response containing EDHOC message 2.
 The EDHOC message 3 is also sent by the CoAP Client in a CoAP POST request to the same resource used for EDHOC message 1.
 The Content-Format of these CoAP messages is set to "application/edhoc".
 
@@ -138,7 +138,7 @@ EDHOC verification +                                  |
 # EDHOC in OSCORE {#edhoc-in-oscore}
 
 The first possibility is to send the EDHOC message 3 inside an OSCORE protected CoAP message.
-The request is in practice the OSCORE CoAP Request from {{fig-non-combined}}, sent to the protected resource andpoint and with correct CoAP method and options, with the addition that it also transports EDHOC message 3.
+The request is in practice the OSCORE CoAP Request from {{fig-non-combined}}, sent to the protected resource endpoint and with the correct CoAP method and options, with the addition that it also transports EDHOC message 3.
 As EDHOC message 3 may be too large to be contained in a CoAP Option, e.g. if containing a large public key certificate chain, it would have to be transported in the CoAP payload.
 The payload is formatted as a CBOR sequence of two CBOR wrapped items: the EDHOC message 3 and the OSCORE ciphertext, in this order.
 
@@ -152,7 +152,7 @@ When receiving such a request, the Server needs to execute the following process
 
 4. Decrypt and verify the remaining OSCORE protected CoAP request as defined by OSCORE.
 
-5. Process the CoAP requests.
+5. Process the CoAP request.
 
 The following sections describe 2 ways of signalling that the EDHOC message is transported in the OSCORE message. In a next update of these document, we will 
 
@@ -162,7 +162,7 @@ The following sections describe 2 ways of signalling that the EDHOC message is t
 
 One way to signal that the Server is to extract and process EDHOC message 3 before the OSCORE message is processed is to define a new CoAP Option, called the EDHOC Option.
 
-This Option being present (either in a request or response) means the payload contains EDHOC data in the payload, that must be extracted and processed before the rest of the message can be executed.
+This Option being present (either in a request or response) means the message contains EDHOC data in the payload, that must be extracted and processed before the rest of the message can be executed.
 The EDHOC message is to be extracted from the CoAP payload as the CBOR wrapped first element of a CBOR sequence.
 
 The Option is critical, Safe-to-Forward, and part of the Cache-Key.
@@ -218,7 +218,7 @@ This processing requires one more step, as the server must build the protected r
 
 One way to signal that the Server is to build and process the OSCORE request after EDHOC processing is to define a new CoAP Option, called the EDHOC Option.
 
-This Option being present (either in a request or response) means the payload contains OSCORE option value and ciphertext in the payload, that must be extracted and processed after the EDHOC processing.
+This Option being present (either in a request or response) means the message contains OSCORE option value and ciphertext in the payload, that must be extracted and processed after the EDHOC processing.
 The OSCORE option and ciphertext are to be extracted from the CoAP payload as the CBOR wrapped second and third element of a CBOR sequence.
 
 The Option is critical, Safe-to-Forward, and part of the Cache-Key.
