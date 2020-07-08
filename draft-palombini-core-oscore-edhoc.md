@@ -17,20 +17,27 @@ author:
     ins: F. Palombini
     name: Francesca Palombini
     organization: Ericsson
-    street: Torshamnsgatan 23
-    city: Kista
-    code: SE-16440 Stockholm
-    country: Sweden
     email: francesca.palombini@ericsson.com
  -
     ins: M. Tiloca
     name: Marco Tiloca
     org: RISE AB
-    street: Isafjordsgatan 22
-    city: Kista
-    code: SE-16440 Stockholm
-    country: Sweden
-    email: marco.tiloca@ri.se    
+    email: marco.tiloca@ri.se 
+ -
+    ins: R. Hoeglund
+    name: Rikard Hoeglund
+    org: RISE AB
+    email: marco.tiloca@ri.se 
+ -
+    ins: S. Hristozov
+    name: Stefan Hristozov
+    organization: Frauhofer AISEC
+    email: stefan.hristozov@aisec.fraunhofer.de  
+ -
+    ins: G. Selander
+    name: Goeran Selander
+    organization: Ericsson
+    email: goran.selander@ericsson.com
 
 normative:
   RFC2119:
@@ -70,9 +77,10 @@ The reader is expected to be familiar with terms and concepts of {{RFC7252}}, {{
 
 # Background
 
-EDHOC is a 3 message key exchange protocol.
+EDHOC is a 3-message key exchange protocol.
 Section 7.1 of {{I-D.ietf-lake-edhoc}} specifes how to transport EDHOC over CoAP: the EDHOC data (referred to as "EDHOC messages") are transported in the payload of CoAP requests and responses.
-More specifically, the Initiator, acting as CoAP Client, sends a POST request to a reserved resource at the Responder, acting as CoAP Server.
+This draft deals with the case of the Initiator acting as CoAP Client and Responder acting as CoAP Server. 
+The CoAP client sends a POST request containing EDHOC message 1 to a reserved resource at the CoAP server.
 This triggers the EDHOC exchange on the CoAP Server, which replies with a 2.04 (Changed) Response containing EDHOC message 2.
 The EDHOC message 3 is also sent by the CoAP Client in a CoAP POST request to the same resource used for EDHOC message 1.
 The Content-Format of these CoAP messages is set to "application/edhoc".
@@ -137,7 +145,7 @@ EDHOC verification +                                  |
 
 # EDHOC in OSCORE {#edhoc-in-oscore}
 
-The first possibility is to send the EDHOC message 3 inside an OSCORE protected CoAP message.
+The first possibility is to send the EDHOC message 3 inside an OSCORE message (= OSCORE protected CoAP message).
 The request is in practice the OSCORE CoAP Request from {{fig-non-combined}}, sent to the protected resource endpoint and with the correct CoAP method and options, with the addition that it also transports EDHOC message 3.
 As EDHOC message 3 may be too large to be contained in a CoAP Option, e.g. if containing a large public key certificate chain, it would have to be transported in the CoAP payload.
 The payload is formatted as a CBOR sequence of two CBOR wrapped items: the EDHOC message 3 and the OSCORE ciphertext, in this order.
