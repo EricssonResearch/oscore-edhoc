@@ -151,7 +151,9 @@ The request is in practice the OSCORE CoAP Request from {{fig-non-combined}}, se
 
 As EDHOC message 3 may be too large to be contained in a CoAP Option, e.g. if containing a large public key certificate chain, it would have to be transported in the CoAP payload.
 
-The payload is formatted as a CBOR sequence of two CBOR wrapped items: the EDHOC message 3 and the OSCORE ciphertext, in this order. Note that the OSCORE ciphertext is not computed over EDHOC message 3, which is not protected by OSCORE.
+The payload is formatted as a CBOR sequence of two CBOR wrapped items: the EDHOC message 3 and the OSCORE ciphertext, in this order.
+
+Note that the OSCORE ciphertext is not computed over EDHOC message 3, which is not protected by OSCORE. That is, the client first prepares the OSCORE CoAP Request as in {{fig-non-combined}}. Then, it reformats the payload to include also EDHOC message 3, as defined above.
 
 The use of this approach is indicated by a signalling information, which can be either a new EDHOC option (see {{sign-1}}) or the OSCORE option with a particular flag bit set (see {{sign-2}}).
 
