@@ -54,7 +54,7 @@ informative:
 
 --- abstract
 
-This documents defines possible optimization approaches for combining the EDHOC key exchange protocol run over CoAP with the first subsequent OSCORE transaction. This combination reduces the number of round trips required to set up an OSCORE Security Context and complete an OSCORE transaction using that context.
+This document defines possible optimization approaches for combining the EDHOC key exchange protocol run over CoAP with the first subsequent OSCORE transaction. This combination reduces the number of round trips required to set up an OSCORE Security Context and complete an OSCORE transaction using that context.
 
 --- middle
 
@@ -80,7 +80,7 @@ The reader is expected to be familiar with terms and concepts defined in CoAP {{
 
 # Background
 
-EDHOC is a 3-message key exchange protocol. Section 7.1 of {{I-D.ietf-lake-edhoc}} specifes how to transport EDHOC over CoAP: the EDHOC data (referred to as "EDHOC messages") are transported in the payload of CoAP requests and responses.
+EDHOC is a 3-message key exchange protocol. Section 7.1 of {{I-D.ietf-lake-edhoc}} specifies how to transport EDHOC over CoAP: the EDHOC data (referred to as "EDHOC messages") are transported in the payload of CoAP requests and responses.
 
 This draft deals with the case of the Initiator acting as CoAP Client and the Responder acting as CoAP Server. That is, the CoAP Client sends a POST request containing the EDHOC message 1 to a reserved resource at the CoAP Server. This triggers the EDHOC exchange on the CoAP Server, which replies with a 2.04 (Changed) Response containing the EDHOC message 2. Finally, the EDHOC message 3 is sent by the CoAP Client in a CoAP POST request to the same resource used for the EDHOC message 1. The Content-Format of these CoAP messages is set to "application/edhoc".
 
@@ -192,7 +192,7 @@ The Option is of Class U for OSCORE.
 
 Another way to signal that the EDHOC message is to be extracted from the CoAP payload as the CBOR wrapped first element of a CBOR sequence, and that the processing defined in {{edhoc-in-oscore}} is to be executed is to use one of the OSCORE Flag Bits.
 
-Bit Postion: 8
+Bit Position: 8
 
 Name: EDHOC
 
@@ -244,7 +244,7 @@ The Option is critical, Safe-to-Forward, and part of the Cache-Key.
 
 The Option value is always empty. If any value is sent, the value is simply discarded.
 
-The Option must occurr at most once.
+The Option must occur at most once.
 
 The Option is of Class U for OSCORE.
 
