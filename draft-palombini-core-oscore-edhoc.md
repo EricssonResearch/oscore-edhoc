@@ -54,23 +54,21 @@ informative:
 
 --- abstract
 
-This document defines possible optimization approaches for combining the EDHOC key exchange protocol run over CoAP with the first subsequent OSCORE transaction. This combination reduces the number of round trips required to set up an OSCORE Security Context and complete an OSCORE transaction using that context.
+This document defines possible optimization approaches for combining the lightweight authenticated key exchange protocol EDHOC run over CoAP with the first subsequent OSCORE transaction. This combination reduces the number of round trips required to set up an OSCORE Security Context and complete an OSCORE transaction using that context.
 
 --- middle
 
 # Introduction
 
-This document presents possible optimization approaches to combine the EDHOC key exchange protocol {{I-D.ietf-lake-edhoc}}, when running over CoAP {{RFC7252}}, with the first subsequent OSCORE {{RFC8613}} transaction.
+This document presents possible optimization approaches to combine the lightweight authenticated key exchange protocol EDHOC {{I-D.ietf-lake-edhoc}}, when running over CoAP {{RFC7252}}, with the first subsequent OSCORE {{RFC8613}} transaction.
 
 This allows for a minimum number of round trips necessary to setup the OSCORE Security Context and complete an OSCORE transaction, for example when an IoT device gets configured in a network for the first time.
 
-The number of protocol round trips implies a minimum number of flights, which can have a substantial impact on performance with certain radio technologies as discussed in Section 2.11 of {{I-D.ietf-lake-reqs}}.
+The number of protocol round trips impacts the minimum number of flights, which can have a substantial impact on performance with certain radio technologies as discussed in Section 2.11 of {{I-D.ietf-lake-reqs}}.
 
-Without this optimization, it is not possible, not even in theory, to achieve the minimum number of flights.
+Without this optimization, it is not possible, not even in theory, to achieve the minimum number of flights. This optimization makes it possible also in practice, since the last message of the EDHOC protocol can be made relatively small (see Section 1 of {{I-D.ietf-lake-edhoc}}), thus allowing additional OSCORE protected CoAP data within target MTU sizes {{I-D.ietf-lake-reqs}}.
 
-This optimization enables it and makes it possible also in practice, since the last message of the EDHOC protocol can be made relatively small (see Section 1 of {{I-D.ietf-lake-edhoc}}), thus allowing additional OSCORE protected CoAP data within target MTU sizes {{I-D.ietf-lake-reqs}}.
-
-The goal of this document is to provide details on how to transport the data and the order of their processing; gather opinions on the different approaches; and select only one of those.
+The goal of this document is to provide details on different alternatives for transporting and processing the necessary data; gather opinions on the different approaches; and select only one of those.
 
 ## Terminology
 
@@ -271,6 +269,6 @@ This document has no IANA actions.
 # Acknowledgments
 {:numbered="false"}
 
-The authors sincerely thank Christian Amsuess, Klaus Hartke, Jim Schaad and Malisa Vucinic for their feedback and comments.
+The authors sincerely thank Christian Amsuess, Klaus Hartke, Jim Schaad and Malisa Vucinic for their feedback and comments in the discussion leading up to this draft.
 
 The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC.
