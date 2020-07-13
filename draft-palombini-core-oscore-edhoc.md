@@ -80,7 +80,7 @@ The reader is expected to be familiar with terms and concepts defined in CoAP {{
 
 EDHOC is a 3-message key exchange protocol. Section 7.1 of {{I-D.ietf-lake-edhoc}} specifies how to transport EDHOC over CoAP: the EDHOC data (referred to as "EDHOC messages") are transported in the payload of CoAP requests and responses.
 
-This draft deals with the case of the Initiator acting as CoAP Client and the Responder acting as CoAP Server. That is, the CoAP Client sends a POST request containing the EDHOC message 1 to a reserved resource at the CoAP Server. This triggers the EDHOC exchange on the CoAP Server, which replies with a 2.04 (Changed) Response containing the EDHOC message 2. Finally, the EDHOC message 3 is sent by the CoAP Client in a CoAP POST request to the same resource used for the EDHOC message 1. The Content-Format of these CoAP messages is set to "application/edhoc".
+This draft deals with the case of the Initiator acting as CoAP Client and the Responder acting as CoAP Server. (The case of Responder sending message 1 in a CoAP response cannot be optimized in this way.) That is, the CoAP Client sends a POST request containing the EDHOC message 1 to a reserved resource at the CoAP Server. This triggers the EDHOC exchange on the CoAP Server, which replies with a 2.04 (Changed) Response containing the EDHOC message 2. Finally, the EDHOC message 3 is sent by the CoAP Client in a CoAP POST request to the same resource used for the EDHOC message 1. The Content-Format of these CoAP messages is set to "application/edhoc".
 
 After this exchange takes place, and after successful verifications specified in the EDHOC protocol, the Client and Server derive the OSCORE Security Context, as specified in Section 7.1.1 of {{I-D.ietf-lake-edhoc}}. Then, they are then ready to use OSCORE.
 
@@ -172,7 +172,7 @@ The following sections describe 2 ways of signalling that the EDHOC message is t
 
 One way to signal that the Server is to extract and process the EDHOC message 3 before the OSCORE message is processed is to define a new CoAP Option, called the EDHOC Option.
 
-This Option being present (either in a request or response) means that the message contains EDHOC data in the payload, that must be extracted and processed before the rest of the message can be processed.
+This Option being present means that the message contains EDHOC data in the payload, that must be extracted and processed before the rest of the message can be processed.
 
 In particular, the EDHOC message is to be extracted from the CoAP payload, as the CBOR wrapped first element of a CBOR sequence.
 
@@ -246,7 +246,7 @@ The Option must occur at most once.
 
 The Option is of Class U for OSCORE.
 
-## Predetermined {#sign-4}
+## Signalling Based on the Number of Elements in the Payload {#sign-4}
 
 Another way to signal this approach and to mandate that the Server is to build and process the OSCORE protected CoAP request after the EDHOC processing is to set up pre-determined policies on both the Client and Server.
 
