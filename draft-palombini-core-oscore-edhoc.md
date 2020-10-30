@@ -184,6 +184,8 @@ The Option must occur at most once.
 
 The Option is of Class U for OSCORE.
 
+{{fig-edhoc-opt}} shows the format for a CoAP message containing both OSCORE and EDHOC, using the newly defined EDHOC option for signaling.
+
 ~~~~~~~~~~~~~~~~~
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -249,6 +251,7 @@ The OSCORE Option value with the EDHOC bit set is given in {{fig-edhoc-bit}}.
 ~~~~~~~~~~~~~~~~~
 {: #fig-edhoc-bit title="The OSCORE Option Value with EDHOC bit set" artwork-align="center"}
 
+{{fig-edhoc-bit-2}} shows the format for a CoAP message containing both OSCORE and EDHOC, using the flag bit 1 in the OSCORE option for signaling.
 
 ~~~~~~~~~~~~~~~~~
  0                   1                   2                   3
