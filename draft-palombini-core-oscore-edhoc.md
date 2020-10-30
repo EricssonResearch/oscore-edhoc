@@ -146,7 +146,7 @@ The request is in practice the OSCORE Request from {{fig-non-combined}}, sent to
 
 As the EDHOC message 3 may be too large to be included in a CoAP Option, e.g. if containing a large public key certificate chain, it would have to be transported in the CoAP payload.
 
-The payload of the request is formatted as a CBOR sequence {{I-D.ietf-lake-reqs}} of two CBOR wrapped items: the EDHOC message 3 and the OSCORE ciphertext, in this order.
+The payload of the request is formatted as a CBOR sequence {{I-D.ietf-lake-reqs}} of two CBOR-wrapped byte string: the EDHOC message 3 and the OSCORE ciphertext, in this order.
 
 Note that the OSCORE ciphertext is not computed over the EDHOC message 3, which is not protected by OSCORE. That is, the client first prepares the OSCORE Request as in {{fig-non-combined}}. Then, it reformats the payload to include also the EDHOC message 3, as defined above.
 
@@ -174,7 +174,7 @@ One way to signal that the Server is to extract and process the EDHOC message 3 
 
 This Option being present means that the message contains EDHOC data in the payload, that must be extracted and processed before the rest of the message can be processed.
 
-In particular, the EDHOC message is to be extracted from the CoAP payload, as the CBOR wrapped first element of a CBOR sequence.
+In particular, the EDHOC message is to be extracted from the CoAP payload, as the CBOR-wrapped byte string first element of a CBOR sequence.
 
 The Option is critical, Safe-to-Forward, and part of the Cache-Key.
 
@@ -223,7 +223,7 @@ An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and 
 
 <!-- Klaus preferred option -->
 
-Another way to signal that the EDHOC message is to be extracted from the CoAP payload as the CBOR wrapped first element of a CBOR sequence, and that the processing defined in {{edhoc-in-oscore}} is to be executed, is to use one of the OSCORE Flag Bits.
+Another way to signal that the EDHOC message is to be extracted from the CoAP payload as the CBOR-wrapped byte string first element of a CBOR sequence, and that the processing defined in {{edhoc-in-oscore}} is to be executed, is to use one of the OSCORE Flag Bits.
 
 Bit Position: 1
 
