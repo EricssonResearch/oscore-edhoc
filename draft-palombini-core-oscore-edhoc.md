@@ -208,13 +208,14 @@ An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and 
 
    o  EDHOC option value: - (0 bytes)
 
-   o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0 (20 bytes)
+   o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0
+      (20 bytes)
 
    From there:
 
-   o  Protected CoAP request (OSCORE message): 0x44025d1f00003974396c6f6
-      3616c686f737462 0914 04 ff 54085253C3991999A5FFB86921E99B607C067770E0
-      4d612f1092f1776f1c1668b3825e (58 bytes)
+   o  Protected CoAP request (OSCORE message): 0x44025d1f0000397439
+      6c6f63616c686f737462 0914 04 ff 54085253C3991999A5FFB86921E99
+      B607C067770E0 4d612f1092f1776f1c1668b3825e (58 bytes)
 ~~~~~~~~~~~~~~~~~
 {: #fig-edhoc-opt-2 title="CoAP message for EDHOC and OSCORE combined - signalled with EDHOC option" artwork-align="center"}
 
@@ -273,13 +274,14 @@ An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and 
 
    o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
 
-   o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0 (20 bytes)
+   o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0
+      (20 bytes)
 
    From there:
 
-   o  Protected CoAP request (OSCORE message): 0x44025d1f00003974396c6f6
-      3616c686f737462 4914 ff 54085253C3991999A5FFB86921E99B607C067770E0
-      4d612f1092f1776f1c1668b3825e (58 bytes)
+   o  Protected CoAP request (OSCORE message): 0x44025d1f000039743
+      96c6f63616c686f737462 4914 ff 54085253C3991999A5FFB86921E99B
+      607C067770E0 4d612f1092f1776f1c1668b3825e (58 bytes)
 ~~~~~~~~~~~~~~~~~
 {: #fig-edhoc-bit-3 title="CoAP message for EDHOC and OSCORE combined - signalled with EDHOC option" artwork-align="center"}
 
