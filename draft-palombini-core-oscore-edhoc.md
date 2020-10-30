@@ -199,7 +199,7 @@ The Option is of Class U for OSCORE.
 |1 1 1 1 1 1 1 1|    Payload (if any) ...
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~~~~~~~
-{: #fig-edhoc-opt title="CoAP message for EDHOC and OSCORE combined - signalled with EDHOC option" artwork-align="center"}
+{: #fig-edhoc-opt title="CoAP message for EDHOC and OSCORE combined - signaled with EDHOC option" artwork-align="center"}
 
 An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and the EDHOC test vector from Appendix B.2 of {{I-D.ietf-lake-edhoc}} is given in {{fig-edhoc-opt-2}}. The example assumes that the EDHOC option is registered with CoAP option number 13.
 
@@ -219,7 +219,7 @@ An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and 
       6c6f63616c686f737462 0914 04 ff 54085253C3991999A5FFB86921E99
       B607C067770E0 4d612f1092f1776f1c1668b3825e (58 bytes)
 ~~~~~~~~~~~~~~~~~
-{: #fig-edhoc-opt-2 title="CoAP message for EDHOC and OSCORE combined - signalled with EDHOC option" artwork-align="center"}
+{: #fig-edhoc-opt-2 title="CoAP message for EDHOC and OSCORE combined - signaled with EDHOC option" artwork-align="center"}
 
 
 ## Signalling in the OSCORE Option {#sign-2}
@@ -266,7 +266,7 @@ The OSCORE Option value with the EDHOC bit set is given in {{fig-edhoc-bit}}.
 |1 1 1 1 1 1 1 1|    Payload (if any) ...
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~~~~~~~
-{: #fig-edhoc-bit-2 title="CoAP message for EDHOC and OSCORE combined - signalled within the OSCORE option" artwork-align="center"}
+{: #fig-edhoc-bit-2 title="CoAP message for EDHOC and OSCORE combined - signaled within the OSCORE option" artwork-align="center"}
 
 An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and the EDHOC test vector from Appendix B.2 of {{I-D.ietf-lake-edhoc}} is given in {{fig-edhoc-bit-3}}. The example assumes that the EDHOC option is registered with CoAP option number 13.
 
@@ -286,7 +286,7 @@ An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and 
       96c6f63616c686f737462 4914 ff 54085253C3991999A5FFB86921E99B
       607C067770E0 4d612f1092f1776f1c1668b3825e (58 bytes)
 ~~~~~~~~~~~~~~~~~
-{: #fig-edhoc-bit-3 title="CoAP message for EDHOC and OSCORE combined - signalled with EDHOC option" artwork-align="center"}
+{: #fig-edhoc-bit-3 title="CoAP message for EDHOC and OSCORE combined - signaled with EDHOC option" artwork-align="center"}
 
 # Security Considerations
 
