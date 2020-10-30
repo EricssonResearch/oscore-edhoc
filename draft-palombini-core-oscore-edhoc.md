@@ -140,7 +140,7 @@ EDHOC verification +                                  |
 
 # EDHOC in OSCORE {#edhoc-in-oscore}
 
-The first approach consists in sending the EDHOC message 3 inside an OSCORE message (i.e., an OSCORE protected CoAP message).
+This approach consists in sending the EDHOC message 3 inside an OSCORE message (i.e., an OSCORE protected CoAP message).
 
 The request is in practice the OSCORE Request from {{fig-non-combined}}, sent to a protected resource and with the correct CoAP method and options, with the addition that it also transports the EDHOC message 3.
 
@@ -184,13 +184,48 @@ The Option must occur at most once.
 
 The Option is of Class U for OSCORE.
 
+~~~~~~~~~~~~~~~~~
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|Ver| T |  TKL  |      Code     |          Message ID           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   Token (if any, TKL bytes) ...
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  OSCORE option  |   EDHOC option  | other options (if any) ...
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|1 1 1 1 1 1 1 1|    Payload (if any) ...
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~~~~~~~~~~~~~~~
+{: #fig-edhoc-opt title="CoAP message for EDHOC and OSCORE combined - signalled with EDHOC option" artwork-align="center"}
+
+An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and the EDHOC test vector from Appendix B.2 of {{I-D.ietf-lake-edhoc}} is given in {{fig-edhoc-opt-2}}. The example assumes that the EDHOC option is registered with CoAP option number 13.
+
+~~~~~~~~~~~~~~~~~
+   o  OSCORE option value: 0x0914 (2 bytes)
+
+   o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
+
+   o  EDHOC option value: - (0 bytes)
+
+   o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0 (20 bytes)
+
+   From there:
+
+   o  Protected CoAP request (OSCORE message): 0x44025d1f00003974396c6f6
+      3616c686f737462 0914 04 ff 54085253C3991999A5FFB86921E99B607C067770E0
+      4d612f1092f1776f1c1668b3825e (58 bytes)
+~~~~~~~~~~~~~~~~~
+{: #fig-edhoc-opt-2 title="CoAP message for EDHOC and OSCORE combined - signalled with EDHOC option" artwork-align="center"}
+
+
 ## Signalling in the OSCORE Option {#sign-2}
 
 <!-- Klaus preferred option -->
 
 Another way to signal that the EDHOC message is to be extracted from the CoAP payload as the CBOR wrapped first element of a CBOR sequence, and that the processing defined in {{edhoc-in-oscore}} is to be executed, is to use one of the OSCORE Flag Bits.
 
-Bit Position: 8
+Bit Position: 1
 
 Name: EDHOC
 
@@ -198,59 +233,55 @@ Description: Set to 1 if the payload is a sequence of EDHOC data and OSCORE payl
 
 Reference: this document
 
-# OSCORE in EDHOC
+The OSCORE Option value with the EDHOC bit set is given in {{fig-edhoc-bit}}.
 
-<!-- Jim preferred option -->
+~~~~~~~~~~~~~~~~~
+ 0 1 2 3 4 5 6 7 <------------- n bytes -------------->
++-+-+-+-+-+-+-+-+--------------------------------------
+|0 1 0|h|k|  n  |       Partial IV (if any) ...
++-+-+-+-+-+-+-+-+--------------------------------------
 
-Instead of transporting the EDHOC message inside an OSCORE message, the second approach consists in transporting the OSCORE protected data in an EDHOC message.
+<- 1 byte -> <----- s bytes ------>
++------------+----------------------+------------------+
+| s (if any) | kid context (if any) | kid (if any) ... |
++------------+----------------------+------------------+
+~~~~~~~~~~~~~~~~~
+{: #fig-edhoc-bit title="The OSCORE Option Value with EDHOC bit set" artwork-align="center"}
 
-The request is in practice the CoAP POST Request containing the EDHOC message 3 from {{fig-non-combined}}, sent to the unprotected resource reserved to EDHOC processing, with the addition that it also transports the OSCORE Option and ciphertext of the original OSCORE Request.
 
-The OSCORE Option and ciphertext contain all the information to reconstruct the original OSCORE Request, including CoAP method, options and payload.
+~~~~~~~~~~~~~~~~~
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|Ver| T |  TKL  |      Code     |          Message ID           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   Token (if any, TKL bytes) ...
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  OSCORE opt(including EDHOC bit)  |  other options (if any) ...
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|1 1 1 1 1 1 1 1|    Payload (if any) ...
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~~~~~~~~~~~~~~~
+{: #fig-edhoc-bit-2 title="CoAP message for EDHOC and OSCORE combined - signalled within the OSCORE option" artwork-align="center"}
 
-The payload is formatted as a CBOR sequence of three CBOR wrapped items: the EDHOC message 3, the OSCORE Option and the OSCORE ciphertext, in this order.
+An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and the EDHOC test vector from Appendix B.2 of {{I-D.ietf-lake-edhoc}} is given in {{fig-edhoc-bit-3}}. The example assumes that the EDHOC option is registered with CoAP option number 13.
 
-Note that the OSCORE ciphertext is not computed over the EDHOC message 3, which is not protected by OSCORE. That is, the client first prepares the OSCORE protected CoAP Request. Then, it adds the OSCORE option and ciphertext to the payload of the EDHOC request to send, as defined above.
+~~~~~~~~~~~~~~~~~
+   o  OSCORE option value without EDHOC bit set: 0x0914 (2 bytes)
 
-The usage of this approach is indicated by a signalling information, which can be either a new EDHOC+OSCORE option (see {{sign-3}}) or the particular structure of the request payload (see {{sign-4}}).
+   o  OSCORE option value with EDHOC bit set: 0x4914 (2 bytes)
 
-When receiving such a request, the Server needs to execute the following processing, in addition to the EDHOC, OSCORE and CoAP processing:
+   o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
 
-1. Check the signalling information to identify that this is an EDHOC + OSCORE request.
+   o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0 (20 bytes)
 
-2. Extract the EDHOC message 3 from the payload.
+   From there:
 
-3. Execute the EDHOC processing, including verifications and OSCORE Security Context derivation.
-
-4. Extract the OSCORE Option value and ciphertext from the payload and reconstruct the OSCORE protected CoAP Request.
-
-5. Decrypt and verify the reconstructed OSCORE protected CoAP request as defined by OSCORE.
-
-6. Process the CoAP request.
-
-Compared to the approach in {{edhoc-in-oscore}}, this processing requires one more step, as the Server must build the OSCORE protected CoAP request from the payload before being able to process it.
-
-## Signalling in a New EDHOC+OSCORE Option {#sign-3}
-
-One way to signal that the Server is to build and process the OSCORE protected CoAP request after the EDHOC processing is to define a new CoAP Option, called the EDHOC+OSCORE Option.
-
-This Option being present (either in a request or response) means that the message contains an OSCORE option value and ciphertext in the payload, that must be extracted and processed after the EDHOC processing.
-
-The OSCORE option and ciphertext are to be extracted from the CoAP payload as the CBOR wrapped second and third element of a CBOR sequence.
-
-The Option is critical, Safe-to-Forward, and part of the Cache-Key.
-
-The Option value is always empty. If any value is sent, the value is simply discarded.
-
-The Option must occur at most once.
-
-The Option is of Class U for OSCORE.
-
-## Signalling Based on the Number of Elements in the Payload {#sign-4}
-
-Another way to signal this approach and to mandate that the Server is to build and process the OSCORE protected CoAP request after the EDHOC processing is to set up pre-determined policies on both the Client and Server.
-
-A Client may be set up to support at the same time receiving only the EDHOC message 3 or both the EDHOC message 3 and the OSCORE Option and ciphertext in the request. The Client would be able to distinguish the two cases based on the number of CBOR elements in the payload, and process the message accordingly.
+   o  Protected CoAP request (OSCORE message): 0x44025d1f00003974396c6f6
+      3616c686f737462 4914 ff 54085253C3991999A5FFB86921E99B607C067770E0
+      4d612f1092f1776f1c1668b3825e (58 bytes)
+~~~~~~~~~~~~~~~~~
+{: #fig-edhoc-bit-3 title="CoAP message for EDHOC and OSCORE combined - signalled with EDHOC option" artwork-align="center"}
 
 # Security Considerations
 
@@ -260,9 +291,7 @@ TODO (more considerations)
 
 # IANA Considerations
 
-This document has no IANA actions.
-
-
+Depending on the option chosen, this document will either register a new CoAP option number to the CoAp Option Number registry, or a new bit to the OSCORE Flag Bits registry.
 
 --- back
 
