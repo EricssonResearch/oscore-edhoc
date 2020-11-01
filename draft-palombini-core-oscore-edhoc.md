@@ -22,11 +22,19 @@ author:
     ins: M. Tiloca
     name: Marco Tiloca
     org: RISE AB
+    street: Isafjordsgatan 22
+    city: Kista
+    code: SE-16440 Stockholm
+    country: Sweden
     email: marco.tiloca@ri.se
  -
     ins: R. Hoeglund
     name: Rikard Hoeglund
     org: RISE AB
+    street: Isafjordsgatan 22
+    city: Kista
+    code: SE-16440 Stockholm
+    country: Sweden
     email: rikard.hoglund@ri.se
  -
     ins: S. Hristozov
@@ -142,49 +150,51 @@ EDHOC verification +                                  |
 
 This approach consists in sending the EDHOC message 3 inside an OSCORE message (i.e., an OSCORE protected CoAP message).
 
-The request is in practice the OSCORE Request from {{fig-non-combined}}, sent to a protected resource and with the correct CoAP method and options, with the addition that it also transports the EDHOC message 3.
+The resulting OSCORE + EDHOC request is in practice the OSCORE Request from {{fig-non-combined}}, sent to a protected resource and with the correct CoAP method and options, with the addition that it also transports the EDHOC message 3.
 
 As the EDHOC message 3 may be too large to be included in a CoAP Option, e.g. if containing a large public key certificate chain, it would have to be transported in the CoAP payload.
 
-The payload of the request is formatted as a CBOR sequence {{I-D.ietf-lake-reqs}} of two CBOR byte string: the EDHOC message 3 and the OSCORE ciphertext, in this order, both encoded as CBOR byte strings.
+In particular, the payload of the OSCORE + EDHOC request is formatted as a CBOR sequence {{I-D.ietf-lake-reqs}} of two CBOR byte strings: the EDHOC message 3 and the OSCORE ciphertext of the original OSCORE Request, in this order, both encoded as CBOR byte strings.
 
-Note that the OSCORE ciphertext is not computed over the EDHOC message 3, which is not protected by OSCORE. That is, the client first prepares the OSCORE Request as in {{fig-non-combined}}. Then, it reformats the payload to include also the EDHOC message 3, as defined above.
+Note that the OSCORE ciphertext is not computed over the EDHOC message 3, which is not protected by OSCORE. That is, the client first prepares the OSCORE Request as in {{fig-non-combined}}. Then, it reformats the payload to include also the EDHOC message 3, as defined above. The result is the OSCORE + EDHOC request to send.
 
-The usage of this approach is indicated by a signalling information, which can be either a new EDHOC option (see {{sign-1}}) or the OSCORE option with a particular Flag Bit set (see {{sign-2}}).
+The usage of this approach is indicated by a signalling information in the OSCORE + EDHOC request, which can be either a new EDHOC Option (see {{sign-1}}) or the OSCORE Option with a particular Flag Bit set (see {{sign-2}}).
 
 When receiving such a request, the Server needs to perform the following processing, in addition to the EDHOC, OSCORE and CoAP processing:
 
 1. Check the signalling information to identify that this is an OSCORE + EDHOC request.
 
-2. Extract the EDHOC message 3 from the payload.
+2. Extract the EDHOC message 3 from the payload of the OSCORE + EDHOC request, as the value of the first CBOR byte string in the CBOR sequence.
 
-3. Execute the EDHOC processing, including verifications and OSCORE Security Context derivation.
+3. Execute the EDHOC processing on the EDHOC message 3, including verifications and the OSCORE Security Context derivation.
 
-4. Decrypt and verify the remaining OSCORE protected CoAP request as defined by OSCORE.
+4. Extract the OSCORE ciphertext from the payload of the OSCORE + EDHOC request, as the value of the second CBOR byte string in the CBOR sequence. Then, set the CoAP payload of the request to the extracted ciphertext.
 
-5. Process the CoAP request.
+5. Decrypt and verify the OSCORE protected CoAP request resulting from step 4, as defined by OSCORE.
 
-The following sections expand on the 2 ways of signalling that the EDHOC message is transported in the OSCORE message.
+6. Process the CoAP request resulting from step 5.
+
+The following sections expand on the two ways of signalling that the EDHOC message is transported in the OSCORE message.
 
 ## Signalling in a New EDHOC Option {#sign-1}
 
 <!-- Malisa preferred option -->
 
-One way to signal that the Server is to extract and process the EDHOC message 3 before the OSCORE message is processed is to define a new CoAP Option, called the EDHOC Option.
+One way to signal that the Server has to extract and process the EDHOC message 3 before processing the OSCORE protected CoAP request is to define a new CoAP Option, called the EDHOC Option.
 
-This Option being present means that the message contains EDHOC data in the payload, that must be extracted and processed before the rest of the message can be processed.
+The presence of this option means that the message contains EDHOC data in the payload, that must be extracted and processed before the rest of the message can be processed.
 
-In particular, the EDHOC message is to be extracted from the CoAP payload, as the first element of a CBOR sequence, wrapped in a CBOR byte string.
+In particular, the EDHOC message 3 has to be extracted from the CoAP payload, as the first element of a CBOR sequence wrapped in a CBOR byte string.
 
 The Option is critical, Safe-to-Forward, and part of the Cache-Key.
 
-The Option value is always empty. If any value is sent, the value is simply discarded.
+The Option value is always empty. If any value is sent, the value is simply ignored.
 
-The Option must occur at most once.
+The Option MUST occur at most once.
 
 The Option is of Class U for OSCORE.
 
-{{fig-edhoc-opt}} shows the format for a CoAP message containing both OSCORE and EDHOC, using the newly defined EDHOC option for signaling.
+{{fig-edhoc-opt}} shows the format for a CoAP message containing both the OSCORE ciphertext and EDHOC message 3, using the newly defined EDHOC option for signaling.
 
 ~~~~~~~~~~~~~~~~~
  0                   1                   2                   3
@@ -196,10 +206,10 @@ The Option is of Class U for OSCORE.
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |  OSCORE option  |   EDHOC option  | other options (if any) ...
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|1 1 1 1 1 1 1 1|    Payload (if any) ...
+|1 1 1 1 1 1 1 1|    Payload
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~~~~~~~
-{: #fig-edhoc-opt title="CoAP message for EDHOC and OSCORE combined - signaled with EDHOC option" artwork-align="center"}
+{: #fig-edhoc-opt title="CoAP message for EDHOC and OSCORE combined - signaled with the EDHOC Option" artwork-align="center"}
 
 An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and the EDHOC test vector from Appendix B.2 of {{I-D.ietf-lake-edhoc}} is given in {{fig-edhoc-opt-2}}. The example assumes that the EDHOC option is registered with CoAP option number 13.
 
@@ -219,20 +229,20 @@ An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and 
       6c6f63616c686f737462 0914 04 ff 54085253C3991999A5FFB86921E99
       B607C067770E0 4d612f1092f1776f1c1668b3825e (58 bytes)
 ~~~~~~~~~~~~~~~~~
-{: #fig-edhoc-opt-2 title="CoAP message for EDHOC and OSCORE combined - signaled with EDHOC option" artwork-align="center"}
+{: #fig-edhoc-opt-2 title="CoAP message for EDHOC and OSCORE combined - signaled with the EDHOC Option" artwork-align="center"}
 
 
 ## Signalling in the OSCORE Option {#sign-2}
 
 <!-- Klaus preferred option -->
 
-Another way to signal that the EDHOC message is to be extracted from the CoAP payload as the first element of a CBOR sequence, encoded as a CBOR byte string, and that the processing defined in {{edhoc-in-oscore}} is to be executed, is to use one of the OSCORE Flag Bits.
+Another way to signal that the EDHOC message 3 is to be extracted from the CoAP payload as the first element of a CBOR sequence wrapped in a CBOR byte string, and that the processing defined in {{edhoc-in-oscore}} is to be executed, is to use one of the OSCORE Flag Bits of the OSCORE Option.
 
 Bit Position: 1
 
 Name: EDHOC
 
-Description: Set to 1 if the payload is a sequence of EDHOC data and OSCORE payload.
+Description: Set to 1 if the payload is a sequence of EDHOC message 3 and OSCORE ciphertext.
 
 Reference: this document
 
@@ -241,17 +251,17 @@ The OSCORE Option value with the EDHOC bit set is given in {{fig-edhoc-bit}}.
 ~~~~~~~~~~~~~~~~~
  0 1 2 3 4 5 6 7 <------------- n bytes -------------->
 +-+-+-+-+-+-+-+-+--------------------------------------
-|0 1 0|h|k|  n  |       Partial IV (if any) ...
+|0|1|0|h|k|  n  |       Partial IV (if any) ...
 +-+-+-+-+-+-+-+-+--------------------------------------
 
-<- 1 byte -> <----- s bytes ------>
+ <- 1 byte -> <----- s bytes ------>
 +------------+----------------------+------------------+
 | s (if any) | kid context (if any) | kid (if any) ... |
 +------------+----------------------+------------------+
 ~~~~~~~~~~~~~~~~~
-{: #fig-edhoc-bit title="The OSCORE Option Value with EDHOC bit set" artwork-align="center"}
+{: #fig-edhoc-bit title="The OSCORE Option Value with the EDHOC bit set" artwork-align="center"}
 
-{{fig-edhoc-bit-2}} shows the format for a CoAP message containing both OSCORE and EDHOC, using the flag bit 1 in the OSCORE option for signaling.
+{{fig-edhoc-bit-2}} shows the format for a CoAP message containing both the OSCORE ciphertext and EDHOC message 3, using the Flag Bit 1 in the OSCORE Option for signaling.
 
 ~~~~~~~~~~~~~~~~~
  0                   1                   2                   3
@@ -261,14 +271,14 @@ The OSCORE Option value with the EDHOC bit set is given in {{fig-edhoc-bit}}.
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |   Token (if any, TKL bytes) ...
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|  OSCORE opt(including EDHOC bit)  |  other options (if any) ...
+|  OSCORE opt (with EDHOC bit set)  |  other options (if any) ...
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|1 1 1 1 1 1 1 1|    Payload (if any) ...
+|1 1 1 1 1 1 1 1|    Payload
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~~~~~~~
 {: #fig-edhoc-bit-2 title="CoAP message for EDHOC and OSCORE combined - signaled within the OSCORE option" artwork-align="center"}
 
-An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and the EDHOC test vector from Appendix B.2 of {{I-D.ietf-lake-edhoc}} is given in {{fig-edhoc-bit-3}}. The example assumes that the EDHOC option is registered with CoAP option number 13.
+An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and the EDHOC test vector from Appendix B.2 of {{I-D.ietf-lake-edhoc}} is given in {{fig-edhoc-bit-3}}.
 
 ~~~~~~~~~~~~~~~~~
    o  OSCORE option value without EDHOC bit set: 0x0914 (2 bytes)
@@ -286,7 +296,7 @@ An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and 
       96c6f63616c686f737462 4914 ff 54085253C3991999A5FFB86921E99B
       607C067770E0 4d612f1092f1776f1c1668b3825e (58 bytes)
 ~~~~~~~~~~~~~~~~~
-{: #fig-edhoc-bit-3 title="CoAP message for EDHOC and OSCORE combined - signaled with EDHOC option" artwork-align="center"}
+{: #fig-edhoc-bit-3 title="CoAP message for EDHOC and OSCORE combined - signaled within the OSCORE Option" artwork-align="center"}
 
 # Security Considerations
 
@@ -296,7 +306,7 @@ TODO (more considerations)
 
 # IANA Considerations
 
-Depending on the option chosen, this document will either register a new CoAP option number to the CoAp Option Number registry, or a new bit to the OSCORE Flag Bits registry.
+Depending on the option chosen, this document will either register a new CoAP Option number to the CoAp Option Number registry, or a new bit to the OSCORE Flag Bits registry.
 
 --- back
 
@@ -305,4 +315,4 @@ Depending on the option chosen, this document will either register a new CoAP op
 
 The authors sincerely thank Christian Amsuess, Klaus Hartke, Jim Schaad and Malisa Vucinic for their feedback and comments in the discussion leading up to this draft.
 
-The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC.
+The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC; and by the H2020 project SIFIS-Home (Grant agreement 952652).
