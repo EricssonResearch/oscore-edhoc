@@ -1,0 +1,137 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2020-11-01T00:34:01.726953+00:00",
+  "repo": "EricssonResearch/oscore-edhoc",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    }
+  ],
+  "issues": [
+    {
+      "number": 1,
+      "id": "MDU6SXNzdWU3Mjc1NzE3NDI=",
+      "title": "CBOR wrapped items",
+      "url": "https://github.com/EricssonResearch/oscore-edhoc/issues/1",
+      "state": "CLOSED",
+      "author": "marco-tiloca-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I guess they are CBOR byte strings, in all mentioned cases.",
+      "createdAt": "2020-10-22T17:09:51Z",
+      "updatedAt": "2020-10-30T14:54:05Z",
+      "closedAt": "2020-10-30T14:54:05Z",
+      "comments": [
+        {
+          "author": "fpalombini",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in 71adcf6",
+          "createdAt": "2020-10-30T14:54:05Z",
+          "updatedAt": "2020-10-30T14:54:05Z"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "MDU6SXNzdWU3Mjc1NzQwODU=",
+      "title": "Observe",
+      "url": "https://github.com/EricssonResearch/oscore-edhoc/issues/2",
+      "state": "CLOSED",
+      "author": "marco-tiloca-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In Section 3 \"EDHOC in OSCORE\", suppose that the client wants to start an observation of the requested resource, hence it includes an inner Observe 0 option.\r\n\r\nWhat should the client store as request for that observation, to possibly resend in the future for re-registration/refresh?\r\n\r\nI guess it's the same thing that the server uses as input to its step 4 later on.",
+      "createdAt": "2020-10-22T17:13:10Z",
+      "updatedAt": "2020-10-30T14:42:35Z",
+      "closedAt": "2020-10-30T14:42:35Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It may be sufficient to store the original CoAP request (before OSCORE protection) for re-registration purposes.",
+          "createdAt": "2020-10-23T11:43:54Z",
+          "updatedAt": "2020-10-23T11:43:54Z"
+        },
+        {
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Right, it is. Then it's just as per 7641 and 8613, and no particular text should be needed.",
+          "createdAt": "2020-10-23T16:31:51Z",
+          "updatedAt": "2020-10-23T16:31:51Z"
+        }
+      ]
+    }
+  ],
+  "pulls": [
+    {
+      "number": 3,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTEzMDYyMjQx",
+      "title": "V 01",
+      "url": "https://github.com/EricssonResearch/oscore-edhoc/pull/3",
+      "state": "OPEN",
+      "author": "fpalombini",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-10-30T14:53:07Z",
+      "updatedAt": "2020-10-30T15:13:06Z",
+      "baseRepository": "EricssonResearch/oscore-edhoc",
+      "baseRefName": "master",
+      "baseRefOid": "6f0f6cd4474da00ce7a6f6802dc919381b6f0170",
+      "headRepository": "EricssonResearch/oscore-edhoc",
+      "headRefName": "v-01",
+      "headRefOid": "e4ba088ee34d4969b879efddc9bdba3110785e19",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    }
+  ]
+}
