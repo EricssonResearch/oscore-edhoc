@@ -306,7 +306,7 @@ TODO (more considerations)
 
 # IANA Considerations
 
-Depending on the option chosen, this document will either register a new CoAP Option number to the CoAp Option Number registry, or a new bit to the OSCORE Flag Bits registry.
+Depending on the option chosen, this document will either register a new CoAP Option number to the CoAP Option Number registry, or a new bit to the OSCORE Flag Bits registry.
 
 --- back
 
