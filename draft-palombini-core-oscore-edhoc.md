@@ -54,7 +54,6 @@ normative:
   RFC8613:
   I-D.ietf-lake-edhoc:
   I-D.ietf-cbor-7049bis:
-  I-D.ietf-lake-reqs:
 
 informative:
 
@@ -72,9 +71,9 @@ This document presents possible optimization approaches to combine the lightweig
 
 This allows for a minimum number of round trips necessary to setup the OSCORE Security Context and complete an OSCORE transaction, for example when an IoT device gets configured in a network for the first time.
 
-The number of protocol round trips impacts the minimum number of flights, which can have a substantial impact on performance with certain radio technologies as discussed in Section 2.11 of {{I-D.ietf-lake-reqs}}.
+The number of protocol round trips impacts the minimum number of flights, which can have a substantial impact on performance with certain radio technologies.
 
-Without this optimization, it is not possible, not even in theory, to achieve the minimum number of flights. This optimization makes it possible also in practice, since the last message of the EDHOC protocol can be made relatively small (see Section 1 of {{I-D.ietf-lake-edhoc}}), thus allowing additional OSCORE protected CoAP data within target MTU sizes {{I-D.ietf-lake-reqs}}.
+Without this optimization, it is not possible, not even in theory, to achieve the minimum number of flights. This optimization makes it possible also in practice, since the last message of the EDHOC protocol can be made relatively small (see Section 1 of {{I-D.ietf-lake-edhoc}}), thus allowing additional OSCORE protected CoAP data within target MTU sizes.
 
 The goal of this document is to provide details on different alternatives for transporting and processing the necessary data, gather opinions on the different approaches, and select only one of those.
 
@@ -154,7 +153,7 @@ The resulting OSCORE + EDHOC request is in practice the OSCORE Request from {{fi
 
 As the EDHOC message 3 may be too large to be included in a CoAP Option, e.g. if containing a large public key certificate chain, it would have to be transported in the CoAP payload.
 
-In particular, the payload of the OSCORE + EDHOC request is formatted as a CBOR sequence {{I-D.ietf-lake-reqs}} of two CBOR byte strings: the EDHOC message 3 and the OSCORE ciphertext of the original OSCORE Request, in this order, both encoded as CBOR byte strings.
+In particular, the payload of the OSCORE + EDHOC request is formatted as a CBOR sequence of two CBOR byte strings: the EDHOC message 3 and the OSCORE ciphertext of the original OSCORE Request, in this order, both encoded as CBOR byte strings.
 
 Note that the OSCORE ciphertext is not computed over the EDHOC message 3, which is not protected by OSCORE. That is, the client first prepares the OSCORE Request as in {{fig-non-combined}}. Then, it reformats the payload to include also the EDHOC message 3, as defined above. The result is the OSCORE + EDHOC request to send.
 
