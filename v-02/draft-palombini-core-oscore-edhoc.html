@@ -13,23 +13,23 @@
 <meta content="
        This document defines possible optimization approaches for combining the lightweight authenticated key exchange protocol EDHOC run over CoAP with the first subsequent OSCORE transaction. This combination reduces the number of round trips required to set up an OSCORE Security Context and complete an OSCORE transaction using that context. 
     " name="description">
-<meta content="xml2rfc 3.2.1" name="generator">
+<meta content="xml2rfc 3.5.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-palombini-core-oscore-edhoc-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.2.1
+  xml2rfc 3.5.0
     Python 3.8.5
     appdirs 1.4.4
     ConfigArgParse 1.2.3
     google-i18n-address 2.4.0
     html5lib 1.1
     intervaltree 3.0.2
-    Jinja2 2.11.2
+    Jinja2 2.11.3
     kitchen 1.2.6
     lxml 4.5.0
     pycountry 19.8.18
     pyflakes 2.1.1
-    PyYAML 5.3.1
+    PyYAML 5.4.1
     requests 2.22.0
     setuptools 45.2.0
     six 1.14.0
@@ -45,7 +45,23 @@ html {
   --link-color: #2a6496;
   --highlight-color: #f9f9f9;
   --line-color: #eee;
+  --pilcrow-weak: #ddd;
+  --pilcrow-strong: #bbb;
   --small-font-size: 14.5px;
+  scrollbar-color: #bbb #eee;
+}
+@media (prefers-color-scheme: dark) {
+html {
+  --background-color: #121212;
+  --text-color: #f0f0f0;
+  --title-color: #fff;
+  --link-color: #4da4f0;
+  --highlight-color: #282828;
+  --line-color: #444;
+  --pilcrow-weak: #444;
+  --pilcrow-strong: #666;
+  scrollbar-color: #777 #333;
+}
 }
 body {
   max-width: 600px;
@@ -77,11 +93,11 @@ body {
 }
 h1, h2, h3 {
   font-size: 22px;
-  line-height: 26px;
+  line-height: 27px;
 }
 h4, h5, h6 {
-  font-size: 18px;
-  line-height: 22px;
+  font-size: 20px;
+  line-height: 24px;
 }
 
 /* general structure */
@@ -237,6 +253,7 @@ img {
 }
 figure {
   margin: 0.5em 0;
+  padding: 0;
 }
 figure blockquote {
   margin: 0.8em 0.4em 0.4em;
@@ -261,10 +278,6 @@ figcaption, caption {
     display: inline-block;
     vertical-align: text-bottom;
     padding-bottom: 8px;
-  }
-  table {
-    display: inline-block;
-    overflow-x: auto;
   }
 }
 
@@ -336,17 +349,23 @@ table p {
 /* pilcrow */
 a.pilcrow {
   margin-left: 3px;
-  visibility: hidden;
+  opacity: 0.2;
   user-select: none;
 }
-a.pilcrow[href] { color: #ddd; }
+a.pilcrow[href] { color: var(--pilcrow-weak); }
 a.pilcrow[href]:hover { text-decoration: none; }
-@media screen {
+@media not print {
   :hover > a.pilcrow {
-    visibility: visible;
+    opacity: 1;
   }
-  a.pilcrow:hover {
+  a.pilcrow[href]:hover {
+    color: var(--pilcrow-strong);
     background-color: transparent;
+  }
+}
+@media print {
+  a.pilcrow {
+    display: none;
   }
 }
 
@@ -822,11 +841,11 @@ address div.right {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">EDHOC + OSCORE</td>
-<td class="right">November 2020</td>
+<td class="right">February 2021</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Palombini, et al.</td>
-<td class="center">Expires 6 May 2021</td>
+<td class="center">Expires 8 August 2021</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -839,12 +858,12 @@ address div.right {
 <dd class="internet-draft">draft-palombini-core-oscore-edhoc-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2020-11-02" class="published">2 November 2020</time>
+<time datetime="2021-02-04" class="published">4 February 2021</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2021-05-06">6 May 2021</time></dd>
+<dd class="expires"><time datetime="2021-08-08">8 August 2021</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -902,7 +921,7 @@ address div.right {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 6 May 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 8 August 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -911,7 +930,7 @@ address div.right {
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2020 IETF Trust and the persons identified as the
+            Copyright (c) 2021 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -930,42 +949,42 @@ address div.right {
         <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
 <a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
         </h2>
-<nav class="toc"><ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.1">
+<nav class="toc"><ul class="toc ulEmpty compact">
+<li class="toc ulEmpty compact" id="section-toc.1-1.1">
             <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="xref">1</a>.  <a href="#name-introduction" class="xref">Introduction</a><a href="#section-toc.1-1.1.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.1.2.1">
+<ul class="toc ulEmpty compact">
+<li class="toc ulEmpty compact" id="section-toc.1-1.1.2.1">
                 <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="xref">1.1</a>.  <a href="#name-terminology" class="xref">Terminology</a><a href="#section-toc.1-1.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.2">
+          <li class="toc ulEmpty compact" id="section-toc.1-1.2">
             <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="xref">2</a>.  <a href="#name-background" class="xref">Background</a><a href="#section-toc.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.3">
+          <li class="toc ulEmpty compact" id="section-toc.1-1.3">
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-edhoc-in-oscore" class="xref">EDHOC in OSCORE</a><a href="#section-toc.1-1.3.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.3.2.1">
+<ul class="toc ulEmpty compact">
+<li class="toc ulEmpty compact" id="section-toc.1-1.3.2.1">
                 <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="xref">3.1</a>.  <a href="#name-signalling-in-a-new-edhoc-o" class="xref">Signalling in a New EDHOC Option</a><a href="#section-toc.1-1.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.3.2.2">
+              <li class="toc ulEmpty compact" id="section-toc.1-1.3.2.2">
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="xref">3.2</a>.  <a href="#name-signalling-in-the-oscore-op" class="xref">Signalling in the OSCORE Option</a><a href="#section-toc.1-1.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.4">
+          <li class="toc ulEmpty compact" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a><a href="#section-toc.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.5">
+          <li class="toc ulEmpty compact" id="section-toc.1-1.5">
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-iana-considerations" class="xref">IANA Considerations</a><a href="#section-toc.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.6">
+          <li class="toc ulEmpty compact" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-normative-references" class="xref">Normative References</a><a href="#section-toc.1-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.7">
+          <li class="toc ulEmpty compact" id="section-toc.1-1.7">
             <p id="section-toc.1-1.7.1"><a href="#section-appendix.a" class="xref"></a><a href="#name-acknowledgments" class="xref">Acknowledgments</a><a href="#section-toc.1-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.8">
+          <li class="toc ulEmpty compact" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#section-appendix.b" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a><a href="#section-toc.1-1.8.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
@@ -1100,17 +1119,30 @@ EDHOC verification +                                  |
         <h3 id="name-signalling-in-a-new-edhoc-o">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-signalling-in-a-new-edhoc-o" class="section-name selfRef">Signalling in a New EDHOC Option</a>
         </h3>
-<p id="section-3.1-1">One way to signal that the Server has to extract and process the EDHOC message 3 before processing the OSCORE protected CoAP request is to define a new CoAP Option, called the EDHOC Option.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.1-2">The presence of this option means that the message contains EDHOC data in the payload, that must be extracted and processed before the rest of the message can be processed.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.1-3">In particular, the EDHOC message 3 has to be extracted from the CoAP payload, as the first element of a CBOR sequence wrapped in a CBOR byte string.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.1-4">The Option is critical, Safe-to-Forward, and part of the Cache-Key.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
-<p id="section-3.1-5">The Option value is always empty. If any value is sent, the value is simply ignored.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
-<p id="section-3.1-6">The Option MUST occur at most once.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
-<p id="section-3.1-7">The Option is of Class U for OSCORE.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
-<p id="section-3.1-8"><a href="#fig-edhoc-opt" class="xref">Figure 3</a> shows the format for a CoAP message containing both the OSCORE ciphertext and EDHOC message 3, using the newly defined EDHOC option for signaling.<a href="#section-3.1-8" class="pilcrow">¶</a></p>
-<span id="name-coap-message-for-edhoc-and-"></span><div id="fig-edhoc-opt">
+<p id="section-3.1-1">One way to signal that the Server has to extract and process the EDHOC message 3 before processing the OSCORE protected CoAP request is to use a new CoAP Option, called the EDHOC Option and defined in this section.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">The EDHOC Option has the properties summarized in <a href="#fig-edhoc-option" class="xref">Figure 3</a>, which extends Table 4 of <span>[<a href="#RFC7252" class="xref">RFC7252</a>]</span>. The option is Critical, Safe-to-Forward, and part of the Cache-Key. The option MUST occur at most once and is always empty. If any value is sent, the value is simply ignored. The option is intended only for CoAP requests and is of Class U for OSCORE.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<span id="name-the-edhoc-option"></span><div id="fig-edhoc-option">
 <figure id="figure-3">
-          <div class="artwork art-text alignCenter" id="section-3.1-9.1">
+          <div class="artwork art-text alignCenter" id="section-3.1-3.1">
+<pre>
++-----+---+---+---+---+-------+--------+--------+---------+
+| No. | C | U | N | R | Name  | Format | Length | Default |
++-----+---+---+---+---+-------+--------+--------+---------+
+| TBD | x |   |   |   | EDHOC | Empty  |   0    | (none)  |
++-----+---+---+---+---+-------+--------+--------+---------+
+     C=Critical, U=Unsafe, N=NoCacheKey, R=Repeatable
+</pre>
+</div>
+<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
+<a href="#name-the-edhoc-option" class="selfRef">The EDHOC Option.</a>
+          </figcaption></figure>
+</div>
+<p id="section-3.1-4">The presence of this option means that the message contains EDHOC data in the payload, that must be extracted and processed before the rest of the message can be processed.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.1-5">In particular, the EDHOC message 3 has to be extracted from the CoAP payload, as the value of the CBOR byte string included as first element of a CBOR sequence.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+<p id="section-3.1-6"><a href="#fig-edhoc-opt" class="xref">Figure 4</a> shows the format for a CoAP message containing both the OSCORE ciphertext and EDHOC message 3, using the newly defined EDHOC option for signaling.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
+<span id="name-coap-message-for-edhoc-and-"></span><div id="fig-edhoc-opt">
+<figure id="figure-4">
+          <div class="artwork art-text alignCenter" id="section-3.1-7.1">
 <pre>
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -1125,32 +1157,45 @@ EDHOC verification +                                  |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 </pre>
 </div>
-<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
+<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
 <a href="#name-coap-message-for-edhoc-and-" class="selfRef">CoAP message for EDHOC and OSCORE combined - signaled with the EDHOC Option</a>
           </figcaption></figure>
 </div>
-<p id="section-3.1-10">An example based on the OSCORE test vector from Appendix C.4 of <span>[<a href="#RFC8613" class="xref">RFC8613</a>]</span> and the EDHOC test vector from Appendix B.2 of <span>[<a href="#I-D.ietf-lake-edhoc" class="xref">I-D.ietf-lake-edhoc</a>]</span> is given in <a href="#fig-edhoc-opt-2" class="xref">Figure 4</a>. The example assumes that the EDHOC option is registered with CoAP option number 13.<a href="#section-3.1-10" class="pilcrow">¶</a></p>
+<p id="section-3.1-8">An example based on the OSCORE test vector from Appendix C.4 of <span>[<a href="#RFC8613" class="xref">RFC8613</a>]</span> and the EDHOC test vector from Appendix B.2 of <span>[<a href="#I-D.ietf-lake-edhoc" class="xref">I-D.ietf-lake-edhoc</a>]</span> is given in <a href="#fig-edhoc-opt-2" class="xref">Figure 5</a>. In particular, the example assumes that:<a href="#section-3.1-8" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.1-9.1">The used Partial IV is 0, consistently with the first request protected with the new OSCORE Security Context. As per Section 6.1 of <span>[<a href="#RFC8613" class="xref">RFC8613</a>]</span>, the Partial IV is thus not present in the OSCORE option.<a href="#section-3.1-9.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.1-9.2">The Sender ID of the client is 0x20. This corresponds to the EDHOC Connection Identifier C_R, which is encoded as the bstr_identifier 0x08 in EDHOC Message_3.<a href="#section-3.1-9.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.1-9.3">The EDHOC option is registered with CoAP option number 13.<a href="#section-3.1-9.3" class="pilcrow">¶</a>
+</li>
+        </ul>
 <span id="name-coap-message-for-edhoc-and-o"></span><div id="fig-edhoc-opt-2">
-<figure id="figure-4">
-          <div class="artwork art-text alignCenter" id="section-3.1-11.1">
+<figure id="figure-5">
+          <div class="artwork art-text alignCenter" id="section-3.1-10.1">
 <pre>
-   o  OSCORE option value: 0x0914 (2 bytes)
-
-   o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
+   o  OSCORE option value: 0x0820 (2 bytes)
 
    o  EDHOC option value: - (0 bytes)
 
    o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0
       (20 bytes)
 
+   o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
+
    From there:
 
-   o  Protected CoAP request (OSCORE message): 0x44025d1f0000397439
-      6c6f63616c686f737462 0914 04 ff 54085253C3991999A5FFB86921E99
-      B607C067770E0 4d612f1092f1776f1c1668b3825e (58 bytes)
+   o  Protected CoAP request (OSCORE message):
+      0x44025d1f 00003974
+        39 6c6f63616c686f7374
+        62 0820
+        40
+        ff 54085253C3991999A5FFB86921E99B607C067770E0
+           4d612f1092f1776f1c1668b3825e
+      (58 bytes)
 </pre>
 </div>
-<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
+<figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
 <a href="#name-coap-message-for-edhoc-and-o" class="selfRef">CoAP message for EDHOC and OSCORE combined - signaled with the EDHOC Option</a>
           </figcaption></figure>
 </div>
@@ -1164,11 +1209,11 @@ EDHOC verification +                                  |
 <p id="section-3.2-1">Another way to signal that the EDHOC message 3 is to be extracted from the CoAP payload as the first element of a CBOR sequence wrapped in a CBOR byte string, and that the processing defined in <a href="#edhoc-in-oscore" class="xref">Section 3</a> is to be executed, is to use one of the OSCORE Flag Bits of the OSCORE Option.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.2-2">Bit Position: 1<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <p id="section-3.2-3">Name: EDHOC<a href="#section-3.2-3" class="pilcrow">¶</a></p>
-<p id="section-3.2-4">Description: Set to 1 if the payload is a sequence of EDHOC message 3 and OSCORE ciphertext.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
+<p id="section-3.2-4">Description: Set to 1 if the payload is a CBOR sequence sequence, including a CBOR byte string wrapping the EDHOC message 3 and a CBOR byte string wrapping the OSCORE ciphertext.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
 <p id="section-3.2-5">Reference: this document<a href="#section-3.2-5" class="pilcrow">¶</a></p>
-<p id="section-3.2-6">The OSCORE Option value with the EDHOC bit set is given in <a href="#fig-edhoc-bit" class="xref">Figure 5</a>.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
+<p id="section-3.2-6">The OSCORE Option value with the EDHOC bit set is given in <a href="#fig-edhoc-bit" class="xref">Figure 6</a>.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
 <span id="name-the-oscore-option-value-wit"></span><div id="fig-edhoc-bit">
-<figure id="figure-5">
+<figure id="figure-6">
           <div class="artwork art-text alignCenter" id="section-3.2-7.1">
 <pre>
  0 1 2 3 4 5 6 7 &lt;------------- n bytes --------------&gt;
@@ -1182,13 +1227,13 @@ EDHOC verification +                                  |
 +------------+----------------------+------------------+
 </pre>
 </div>
-<figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
+<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
 <a href="#name-the-oscore-option-value-wit" class="selfRef">The OSCORE Option Value with the EDHOC bit set</a>
           </figcaption></figure>
 </div>
-<p id="section-3.2-8"><a href="#fig-edhoc-bit-2" class="xref">Figure 6</a> shows the format for a CoAP message containing both the OSCORE ciphertext and EDHOC message 3, using the Flag Bit 1 in the OSCORE Option for signaling.<a href="#section-3.2-8" class="pilcrow">¶</a></p>
+<p id="section-3.2-8"><a href="#fig-edhoc-bit-2" class="xref">Figure 7</a> shows the format for a CoAP message containing both the OSCORE ciphertext and EDHOC message 3, using the Flag Bit 1 in the OSCORE Option for signaling.<a href="#section-3.2-8" class="pilcrow">¶</a></p>
 <span id="name-coap-message-for-edhoc-and-os"></span><div id="fig-edhoc-bit-2">
-<figure id="figure-6">
+<figure id="figure-7">
           <div class="artwork art-text alignCenter" id="section-3.2-9.1">
 <pre>
  0                   1                   2                   3
@@ -1204,32 +1249,36 @@ EDHOC verification +                                  |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 </pre>
 </div>
-<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
+<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
 <a href="#name-coap-message-for-edhoc-and-os" class="selfRef">CoAP message for EDHOC and OSCORE combined - signaled within the OSCORE option</a>
           </figcaption></figure>
 </div>
-<p id="section-3.2-10">An example based on the OSCORE test vector from Appendix C.4 of <span>[<a href="#RFC8613" class="xref">RFC8613</a>]</span> and the EDHOC test vector from Appendix B.2 of <span>[<a href="#I-D.ietf-lake-edhoc" class="xref">I-D.ietf-lake-edhoc</a>]</span> is given in <a href="#fig-edhoc-bit-3" class="xref">Figure 7</a>.<a href="#section-3.2-10" class="pilcrow">¶</a></p>
+<p id="section-3.2-10">An example based on the OSCORE test vector from Appendix C.4 of <span>[<a href="#RFC8613" class="xref">RFC8613</a>]</span> and the EDHOC test vector from Appendix B.2 of <span>[<a href="#I-D.ietf-lake-edhoc" class="xref">I-D.ietf-lake-edhoc</a>]</span> is given in <a href="#fig-edhoc-bit-3" class="xref">Figure 8</a>. The same assumptions as in <a href="#sign-1" class="xref">Section 3.1</a> apply for this example, with respect to the Partial IV and the Sender ID of the client.<a href="#section-3.2-10" class="pilcrow">¶</a></p>
 <span id="name-coap-message-for-edhoc-and-osc"></span><div id="fig-edhoc-bit-3">
-<figure id="figure-7">
+<figure id="figure-8">
           <div class="artwork art-text alignCenter" id="section-3.2-11.1">
 <pre>
    o  OSCORE option value without EDHOC bit set: 0x0914 (2 bytes)
 
    o  OSCORE option value with EDHOC bit set: 0x4914 (2 bytes)
 
-   o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
-
    o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0
       (20 bytes)
 
+   o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
+
    From there:
 
-   o  Protected CoAP request (OSCORE message): 0x44025d1f000039743
-      96c6f63616c686f737462 4914 ff 54085253C3991999A5FFB86921E99B
-      607C067770E0 4d612f1092f1776f1c1668b3825e (58 bytes)
+   o  Protected CoAP request (OSCORE message):
+      0x44025d1f 00003974
+        39 6c6f63616c686f7374
+        62 4820
+        ff 54085253C3991999A5FFB86921E99B607C067770E0
+           4d612f1092f1776f1c1668b3825e
+      (57 bytes)
 </pre>
 </div>
-<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
+<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
 <a href="#name-coap-message-for-edhoc-and-osc" class="selfRef">CoAP message for EDHOC and OSCORE combined - signaled within the OSCORE Option</a>
           </figcaption></figure>
 </div>
@@ -1265,7 +1314,7 @@ EDHOC verification +                                  |
 <dd class="break"></dd>
 <dt id="I-D.ietf-lake-edhoc">[I-D.ietf-lake-edhoc]</dt>
       <dd>
-<span class="refAuthor">Selander, G.</span><span class="refAuthor">, Mattsson, J.</span><span class="refAuthor">, and F. Palombini</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-lake-edhoc-01</span>, <time datetime="2020-08-02" class="refDate">2 August 2020</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-ietf-lake-edhoc-01.txt">http://www.ietf.org/internet-drafts/draft-ietf-lake-edhoc-01.txt</a>&gt;</span>. </dd>
+<span class="refAuthor">Selander, G.</span><span class="refAuthor">, Mattsson, J.</span><span class="refAuthor">, and F. Palombini</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-lake-edhoc-03</span>, <time datetime="2020-12-18" class="refDate">18 December 2020</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-ietf-lake-edhoc-03.txt">http://www.ietf.org/internet-drafts/draft-ietf-lake-edhoc-03.txt</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
       <dd>

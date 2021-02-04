@@ -5,13 +5,13 @@
 CoRE Working Group                                          F. Palombini
 Internet-Draft                                                  Ericsson
 Intended status: Standards Track                               M. Tiloca
-Expires: 6 May 2021                                          R. Hoeglund
+Expires: 8 August 2021                                       R. Hoeglund
                                                                  RISE AB
                                                             S. Hristozov
                                                         Fraunhofer AISEC
                                                              G. Selander
                                                                 Ericsson
-                                                         2 November 2020
+                                                         4 February 2021
 
 
                        Combining EDHOC and OSCORE
@@ -49,18 +49,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 May 2021.
-
-
-
-Palombini, et al.          Expires 6 May 2021                   [Page 1]
-
-Internet-Draft               EDHOC + OSCORE                November 2020
-
+   This Internet-Draft will expire on 8 August 2021.
 
 Copyright Notice
 
-   Copyright (c) 2020 IETF Trust and the persons identified as the
+   Copyright (c) 2021 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -74,17 +67,17 @@ Copyright Notice
 
 Table of Contents
 
-   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-     1.1.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
-   2.  Background  . . . . . . . . . . . . . . . . . . . . . . . . .   3
-   3.  EDHOC in OSCORE . . . . . . . . . . . . . . . . . . . . . . .   5
-     3.1.  Signalling in a New EDHOC Option  . . . . . . . . . . . .   6
-     3.2.  Signalling in the OSCORE Option . . . . . . . . . . . . .   8
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
-   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
-   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   9
-   Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .  10
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
+   1.  Introduction
+     1.1.  Terminology
+   2.  Background
+   3.  EDHOC in OSCORE
+     3.1.  Signalling in a New EDHOC Option
+     3.2.  Signalling in the OSCORE Option
+   4.  Security Considerations
+   5.  IANA Considerations
+   6.  Normative References
+   Acknowledgments
+   Authors' Addresses
 
 1.  Introduction
 
@@ -101,18 +94,6 @@ Table of Contents
    The number of protocol round trips impacts the minimum number of
    flights, which can have a substantial impact on performance with
    certain radio technologies.
-
-
-
-
-
-
-
-
-Palombini, et al.          Expires 6 May 2021                   [Page 2]
-
-Internet-Draft               EDHOC + OSCORE                November 2020
-
 
    Without this optimization, it is not possible, not even in theory, to
    achieve the minimum number of flights.  This optimization makes it
@@ -161,15 +142,6 @@ Internet-Draft               EDHOC + OSCORE                November 2020
    OSCORE Security Context, as specified in Section 7.1.1 of
    [I-D.ietf-lake-edhoc].  Then, they are ready to use OSCORE.
 
-
-
-
-
-Palombini, et al.          Expires 6 May 2021                   [Page 3]
-
-Internet-Draft               EDHOC + OSCORE                November 2020
-
-
    This sequential way of running EDHOC and then OSCORE is specified in
    Figure 1.  As shown in the figure, this mechanism is executed in 3
    round trips.
@@ -209,22 +181,6 @@ Internet-Draft               EDHOC + OSCORE                November 2020
 
    Defining the specific details of how to transport the data and of
    their processing order is the goal of this specification.
-
-
-
-
-
-
-
-
-
-
-
-
-Palombini, et al.          Expires 6 May 2021                   [Page 4]
-
-Internet-Draft               EDHOC + OSCORE                November 2020
-
 
          CoAP Client                                  CoAP Server
               | ------------- EDHOC message_1 ------------> |
@@ -272,16 +228,6 @@ Internet-Draft               EDHOC + OSCORE                November 2020
    the payload to include also the EDHOC message 3, as defined above.
    The result is the OSCORE + EDHOC request to send.
 
-
-
-
-
-
-Palombini, et al.          Expires 6 May 2021                   [Page 5]
-
-Internet-Draft               EDHOC + OSCORE                November 2020
-
-
    The usage of this approach is indicated by a signalling information
    in the OSCORE + EDHOC request, which can be either a new EDHOC Option
    (see Section 3.1) or the OSCORE Option with a particular Flag Bit set
@@ -318,34 +264,34 @@ Internet-Draft               EDHOC + OSCORE                November 2020
 
    One way to signal that the Server has to extract and process the
    EDHOC message 3 before processing the OSCORE protected CoAP request
-   is to define a new CoAP Option, called the EDHOC Option.
+   is to use a new CoAP Option, called the EDHOC Option and defined in
+   this section.
+
+   The EDHOC Option has the properties summarized in Figure 3, which
+   extends Table 4 of [RFC7252].  The option is Critical, Safe-to-
+   Forward, and part of the Cache-Key. The option MUST occur at most
+   once and is always empty.  If any value is sent, the value is simply
+   ignored.  The option is intended only for CoAP requests and is of
+   Class U for OSCORE.
+
+        +-----+---+---+---+---+-------+--------+--------+---------+
+        | No. | C | U | N | R | Name  | Format | Length | Default |
+        +-----+---+---+---+---+-------+--------+--------+---------+
+        | TBD | x |   |   |   | EDHOC | Empty  |   0    | (none)  |
+        +-----+---+---+---+---+-------+--------+--------+---------+
+             C=Critical, U=Unsafe, N=NoCacheKey, R=Repeatable
+
+                        Figure 3: The EDHOC Option.
 
    The presence of this option means that the message contains EDHOC
    data in the payload, that must be extracted and processed before the
    rest of the message can be processed.
 
    In particular, the EDHOC message 3 has to be extracted from the CoAP
-   payload, as the first element of a CBOR sequence wrapped in a CBOR
-   byte string.
+   payload, as the value of the CBOR byte string included as first
+   element of a CBOR sequence.
 
-   The Option is critical, Safe-to-Forward, and part of the Cache-Key.
-
-
-
-
-Palombini, et al.          Expires 6 May 2021                   [Page 6]
-
-Internet-Draft               EDHOC + OSCORE                November 2020
-
-
-   The Option value is always empty.  If any value is sent, the value is
-   simply ignored.
-
-   The Option MUST occur at most once.
-
-   The Option is of Class U for OSCORE.
-
-   Figure 3 shows the format for a CoAP message containing both the
+   Figure 4 shows the format for a CoAP message containing both the
    OSCORE ciphertext and EDHOC message 3, using the newly defined EDHOC
    option for signaling.
 
@@ -361,38 +307,47 @@ Internet-Draft               EDHOC + OSCORE                November 2020
      |1 1 1 1 1 1 1 1|    Payload
      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-      Figure 3: CoAP message for EDHOC and OSCORE combined - signaled
+      Figure 4: CoAP message for EDHOC and OSCORE combined - signaled
                            with the EDHOC Option
 
    An example based on the OSCORE test vector from Appendix C.4 of
    [RFC8613] and the EDHOC test vector from Appendix B.2 of
-   [I-D.ietf-lake-edhoc] is given in Figure 4.  The example assumes that
-   the EDHOC option is registered with CoAP option number 13.
+   [I-D.ietf-lake-edhoc] is given in Figure 5.  In particular, the
+   example assumes that:
 
-       o  OSCORE option value: 0x0914 (2 bytes)
+   *  The used Partial IV is 0, consistently with the first request
+      protected with the new OSCORE Security Context.  As per
+      Section 6.1 of [RFC8613], the Partial IV is thus not present in
+      the OSCORE option.
 
-       o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
+   *  The Sender ID of the client is 0x20.  This corresponds to the
+      EDHOC Connection Identifier C_R, which is encoded as the
+      bstr_identifier 0x08 in EDHOC Message_3.
 
-       o  EDHOC option value: - (0 bytes)
+   *  The EDHOC option is registered with CoAP option number 13.
 
-       o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0
-          (20 bytes)
+         o  OSCORE option value: 0x0820 (2 bytes)
 
-       From there:
+         o  EDHOC option value: - (0 bytes)
 
-       o  Protected CoAP request (OSCORE message): 0x44025d1f0000397439
-          6c6f63616c686f737462 0914 04 ff 54085253C3991999A5FFB86921E99
-          B607C067770E0 4d612f1092f1776f1c1668b3825e (58 bytes)
+         o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0
+            (20 bytes)
 
-      Figure 4: CoAP message for EDHOC and OSCORE combined - signaled
+         o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
+
+         From there:
+
+         o  Protected CoAP request (OSCORE message):
+            0x44025d1f 00003974
+              39 6c6f63616c686f7374
+              62 0820
+              40
+              ff 54085253C3991999A5FFB86921E99B607C067770E0
+                 4d612f1092f1776f1c1668b3825e
+            (58 bytes)
+
+      Figure 5: CoAP message for EDHOC and OSCORE combined - signaled
                            with the EDHOC Option
-
-
-
-Palombini, et al.          Expires 6 May 2021                   [Page 7]
-
-Internet-Draft               EDHOC + OSCORE                November 2020
-
 
 3.2.  Signalling in the OSCORE Option
 
@@ -406,12 +361,13 @@ Internet-Draft               EDHOC + OSCORE                November 2020
 
    Name: EDHOC
 
-   Description: Set to 1 if the payload is a sequence of EDHOC message 3
-   and OSCORE ciphertext.
+   Description: Set to 1 if the payload is a CBOR sequence sequence,
+   including a CBOR byte string wrapping the EDHOC message 3 and a CBOR
+   byte string wrapping the OSCORE ciphertext.
 
    Reference: this document
 
-   The OSCORE Option value with the EDHOC bit set is given in Figure 5.
+   The OSCORE Option value with the EDHOC bit set is given in Figure 6.
 
           0 1 2 3 4 5 6 7 <------------- n bytes -------------->
          +-+-+-+-+-+-+-+-+--------------------------------------
@@ -423,9 +379,9 @@ Internet-Draft               EDHOC + OSCORE                November 2020
          | s (if any) | kid context (if any) | kid (if any) ... |
          +------------+----------------------+------------------+
 
-          Figure 5: The OSCORE Option Value with the EDHOC bit set
+          Figure 6: The OSCORE Option Value with the EDHOC bit set
 
-   Figure 6 shows the format for a CoAP message containing both the
+   Figure 7 shows the format for a CoAP message containing both the
    OSCORE ciphertext and EDHOC message 3, using the Flag Bit 1 in the
    OSCORE Option for signaling.
 
@@ -441,38 +397,35 @@ Internet-Draft               EDHOC + OSCORE                November 2020
      |1 1 1 1 1 1 1 1|    Payload
      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-
-
-
-
-Palombini, et al.          Expires 6 May 2021                   [Page 8]
-
-Internet-Draft               EDHOC + OSCORE                November 2020
-
-
-      Figure 6: CoAP message for EDHOC and OSCORE combined - signaled
+      Figure 7: CoAP message for EDHOC and OSCORE combined - signaled
                           within the OSCORE option
 
    An example based on the OSCORE test vector from Appendix C.4 of
    [RFC8613] and the EDHOC test vector from Appendix B.2 of
-   [I-D.ietf-lake-edhoc] is given in Figure 7.
+   [I-D.ietf-lake-edhoc] is given in Figure 8.  The same assumptions as
+   in Section 3.1 apply for this example, with respect to the Partial IV
+   and the Sender ID of the client.
 
-       o  OSCORE option value without EDHOC bit set: 0x0914 (2 bytes)
+        o  OSCORE option value without EDHOC bit set: 0x0914 (2 bytes)
 
-       o  OSCORE option value with EDHOC bit set: 0x4914 (2 bytes)
+        o  OSCORE option value with EDHOC bit set: 0x4914 (2 bytes)
 
-       o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
+        o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0
+           (20 bytes)
 
-       o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0
-          (20 bytes)
+        o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
 
-       From there:
+        From there:
 
-       o  Protected CoAP request (OSCORE message): 0x44025d1f000039743
-          96c6f63616c686f737462 4914 ff 54085253C3991999A5FFB86921E99B
-          607C067770E0 4d612f1092f1776f1c1668b3825e (58 bytes)
+        o  Protected CoAP request (OSCORE message):
+           0x44025d1f 00003974
+             39 6c6f63616c686f7374
+             62 4820
+             ff 54085253C3991999A5FFB86921E99B607C067770E0
+                4d612f1092f1776f1c1668b3825e
+           (57 bytes)
 
-      Figure 7: CoAP message for EDHOC and OSCORE combined - signaled
+      Figure 8: CoAP message for EDHOC and OSCORE combined - signaled
                           within the OSCORE Option
 
 4.  Security Considerations
@@ -497,21 +450,12 @@ Internet-Draft               EDHOC + OSCORE                November 2020
               <http://www.ietf.org/internet-drafts/draft-ietf-cbor-
               7049bis-16.txt>.
 
-
-
-
-
-Palombini, et al.          Expires 6 May 2021                   [Page 9]
-
-Internet-Draft               EDHOC + OSCORE                November 2020
-
-
    [I-D.ietf-lake-edhoc]
               Selander, G., Mattsson, J., and F. Palombini, "Ephemeral
               Diffie-Hellman Over COSE (EDHOC)", Work in Progress,
-              Internet-Draft, draft-ietf-lake-edhoc-01, 2 August 2020,
-              <http://www.ietf.org/internet-drafts/draft-ietf-lake-
-              edhoc-01.txt>.
+              Internet-Draft, draft-ietf-lake-edhoc-03, 18 December
+              2020, <http://www.ietf.org/internet-drafts/draft-ietf-
+              lake-edhoc-03.txt>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -550,18 +494,6 @@ Authors' Addresses
    Email: francesca.palombini@ericsson.com
 
 
-
-
-
-
-
-
-
-Palombini, et al.          Expires 6 May 2021                  [Page 10]
-
-Internet-Draft               EDHOC + OSCORE                November 2020
-
-
    Marco Tiloca
    RISE AB
    Isafjordsgatan 22
@@ -590,27 +522,3 @@ Internet-Draft               EDHOC + OSCORE                November 2020
    Ericsson
 
    Email: goran.selander@ericsson.com
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Palombini, et al.          Expires 6 May 2021                  [Page 11]
