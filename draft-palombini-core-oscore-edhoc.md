@@ -209,7 +209,7 @@ The following sections expand on the two ways of signalling that EDHOC message_3
 
 # Signalling method {#signalling}
 
-This section defines the two possible methods that can be used to signal an the EDHOC + OSCORE request. 
+This section defines the two possible methods that can be used to signal an EDHOC + OSCORE request. 
 
 ## Signalling with a New EDHOC Option {#sign-1}
 
