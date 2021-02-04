@@ -177,6 +177,8 @@ When receiving such a request, the Server needs to perform the following process
 
 6. Process the CoAP request resulting from step 5.
 
+If steps 4 (EDHOC processing) and 5 (OSCORE processing) on the received request are both successfully completed, the server MUST reply with an OSCORE protected response, in order for the client to achieve key confirmation (see Section 5.4.2 of {{I-D.ietf-lake-edhoc}}). The usage of EDHOC message_4 as defined in Section 7.1 of {{I-D.ietf-lake-edhoc}} is not applicable to the approach defined in this specification.
+
 The following sections expand on the two ways of signalling that EDHOC message_3 is transported in the EDHOC + OSCORE request.
 
 ## Signalling in a New EDHOC Option {#sign-1}
