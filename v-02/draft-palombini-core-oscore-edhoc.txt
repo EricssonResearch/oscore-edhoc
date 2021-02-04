@@ -319,7 +319,7 @@ Table of Contents
 4.  Signalling method
 
    This section defines the two possible methods that can be used to
-   signal an the EDHOC + OSCORE request.
+   signal an EDHOC + OSCORE request.
 
 4.1.  Signalling with a New EDHOC Option
 
