@@ -179,19 +179,23 @@ The following sections expand on the two ways of signalling that the EDHOC messa
 
 <!-- Malisa preferred option -->
 
-One way to signal that the Server has to extract and process the EDHOC message 3 before processing the OSCORE protected CoAP request is to define a new CoAP Option, called the EDHOC Option.
+One way to signal that the Server has to extract and process the EDHOC message 3 before processing the OSCORE protected CoAP request is to use a new CoAP Option, called the EDHOC Option and defined in this section.
+
+The EDHOC Option has the properties summarized in {{fig-edhoc-option}}, which extends Table 4 of {{RFC7252}}. The option is Critical, Safe-to-Forward, and part of the Cache-Key. The option MUST occur at most once and is always empty. If any value is sent, the value is simply ignored. The option is intended only for CoAP requests and is of Class U for OSCORE.
+
+~~~~~~~~~~~
++-----+---+---+---+---+-------+--------+--------+---------+
+| No. | C | U | N | R | Name  | Format | Length | Default |
++-----+---+---+---+---+-------+--------+--------+---------+
+| TBD | x |   |   |   | EDHOC | Empty  |   0    | (none)  |
++-----+---+---+---+---+-------+--------+--------+---------+
+     C=Critical, U=Unsafe, N=NoCacheKey, R=Repeatable
+~~~~~~~~~~~
+{: #fig-edhoc-option title="The EDHOC Option." artwork-align="center"}
 
 The presence of this option means that the message contains EDHOC data in the payload, that must be extracted and processed before the rest of the message can be processed.
 
-In particular, the EDHOC message 3 has to be extracted from the CoAP payload, as the first element of a CBOR sequence wrapped in a CBOR byte string.
-
-The Option is critical, Safe-to-Forward, and part of the Cache-Key.
-
-The Option value is always empty. If any value is sent, the value is simply ignored.
-
-The Option MUST occur at most once.
-
-The Option is of Class U for OSCORE.
+In particular, the EDHOC message 3 has to be extracted from the CoAP payload, as the value of the CBOR byte string included as first element of a CBOR sequence.
 
 {{fig-edhoc-opt}} shows the format for a CoAP message containing both the OSCORE ciphertext and EDHOC message 3, using the newly defined EDHOC option for signaling.
 
@@ -210,23 +214,34 @@ The Option is of Class U for OSCORE.
 ~~~~~~~~~~~~~~~~~
 {: #fig-edhoc-opt title="CoAP message for EDHOC and OSCORE combined - signaled with the EDHOC Option" artwork-align="center"}
 
-An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and the EDHOC test vector from Appendix B.2 of {{I-D.ietf-lake-edhoc}} is given in {{fig-edhoc-opt-2}}. The example assumes that the EDHOC option is registered with CoAP option number 13.
+An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and the EDHOC test vector from Appendix B.2 of {{I-D.ietf-lake-edhoc}} is given in {{fig-edhoc-opt-2}}. In particular, the example assumes that:
+
+* The used Partial IV is 0, consistently with the first request protected with the new OSCORE Security Context. As per Section 6.1 of {{RFC8613}}, the Partial IV is thus not present in the OSCORE option.
+
+* The Sender ID of the client is 0x20. This corresponds to the EDHOC Connection Identifier C_R, which is encoded as the bstr_identifier 0x08 in EDHOC Message_3.
+
+* The EDHOC option is registered with CoAP option number 13.
 
 ~~~~~~~~~~~~~~~~~
-   o  OSCORE option value: 0x0914 (2 bytes)
-
-   o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
+   o  OSCORE option value: 0x0820 (2 bytes)
 
    o  EDHOC option value: - (0 bytes)
 
    o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0
       (20 bytes)
 
+   o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
+      
    From there:
 
-   o  Protected CoAP request (OSCORE message): 0x44025d1f0000397439
-      6c6f63616c686f737462 0914 04 ff 54085253C3991999A5FFB86921E99
-      B607C067770E0 4d612f1092f1776f1c1668b3825e (58 bytes)
+   o  Protected CoAP request (OSCORE message):
+      0x44025d1f 00003974
+        39 6c6f63616c686f7374
+        62 0820
+        40
+        ff 54085253C3991999A5FFB86921E99B607C067770E0
+           4d612f1092f1776f1c1668b3825e
+      (58 bytes)
 ~~~~~~~~~~~~~~~~~
 {: #fig-edhoc-opt-2 title="CoAP message for EDHOC and OSCORE combined - signaled with the EDHOC Option" artwork-align="center"}
 
@@ -241,7 +256,7 @@ Bit Position: 1
 
 Name: EDHOC
 
-Description: Set to 1 if the payload is a sequence of EDHOC message 3 and OSCORE ciphertext.
+Description: Set to 1 if the payload is a CBOR sequence sequence, including a CBOR byte string wrapping the EDHOC message 3 and a CBOR byte string wrapping the OSCORE ciphertext.
 
 Reference: this document
 
@@ -277,23 +292,27 @@ The OSCORE Option value with the EDHOC bit set is given in {{fig-edhoc-bit}}.
 ~~~~~~~~~~~~~~~~~
 {: #fig-edhoc-bit-2 title="CoAP message for EDHOC and OSCORE combined - signaled within the OSCORE option" artwork-align="center"}
 
-An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and the EDHOC test vector from Appendix B.2 of {{I-D.ietf-lake-edhoc}} is given in {{fig-edhoc-bit-3}}.
+An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and the EDHOC test vector from Appendix B.2 of {{I-D.ietf-lake-edhoc}} is given in {{fig-edhoc-bit-3}}. The same assumptions as in {{sign-1}} apply for this example, with respect to the Partial IV and the Sender ID of the client.
 
 ~~~~~~~~~~~~~~~~~
    o  OSCORE option value without EDHOC bit set: 0x0914 (2 bytes)
 
    o  OSCORE option value with EDHOC bit set: 0x4914 (2 bytes)
 
-   o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
-
    o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0
       (20 bytes)
+      
+   o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
 
    From there:
 
-   o  Protected CoAP request (OSCORE message): 0x44025d1f000039743
-      96c6f63616c686f737462 4914 ff 54085253C3991999A5FFB86921E99B
-      607C067770E0 4d612f1092f1776f1c1668b3825e (58 bytes)
+   o  Protected CoAP request (OSCORE message):
+      0x44025d1f 00003974
+        39 6c6f63616c686f7374
+        62 4820
+        ff 54085253C3991999A5FFB86921E99B607C067770E0
+           4d612f1092f1776f1c1668b3825e
+      (57 bytes)
 ~~~~~~~~~~~~~~~~~
 {: #fig-edhoc-bit-3 title="CoAP message for EDHOC and OSCORE combined - signaled within the OSCORE Option" artwork-align="center"}
 
