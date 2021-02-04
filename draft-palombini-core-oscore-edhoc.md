@@ -216,18 +216,18 @@ In particular, the EDHOC message 3 has to be extracted from the CoAP payload, as
 
 An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and the EDHOC test vector from Appendix B.2 of {{I-D.ietf-lake-edhoc}} is given in {{fig-edhoc-opt-2}}. In particular, the example assumes that:
 
-* The used Partial IV is 0, consistently with the first request protected with the new OSCORE Security Context. As per Section 6.1 of {{RFC8613}}, the Partial IV is thus not present in the OSCORE option.
+* The used Partial IV is 0, consistently with the first request protected with the new OSCORE Security Context.
 
 * The Sender ID of the client is 0x20. This corresponds to the EDHOC Connection Identifier C_R, which is encoded as the bstr_identifier 0x08 in EDHOC Message_3.
 
 * The EDHOC option is registered with CoAP option number 13.
 
 ~~~~~~~~~~~~~~~~~
-   o  OSCORE option value: 0x0820 (2 bytes)
+   o  OSCORE option value: 0x090020 (3 bytes)
 
    o  EDHOC option value: - (0 bytes)
 
-   o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0
+   o  EDHOC message 3: 0x085253c3991999a5ffb86921e99b607c067770e0
       (20 bytes)
 
    o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
@@ -237,11 +237,11 @@ An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and 
    o  Protected CoAP request (OSCORE message):
       0x44025d1f 00003974
         39 6c6f63616c686f7374
-        62 0820
+        63 090020
         40
         ff 54085253C3991999A5FFB86921E99B607C067770E0
            4d612f1092f1776f1c1668b3825e
-      (58 bytes)
+      (59 bytes)
 ~~~~~~~~~~~~~~~~~
 {: #fig-edhoc-opt-2 title="CoAP message for EDHOC and OSCORE combined - signaled with the EDHOC Option" artwork-align="center"}
 
@@ -295,11 +295,11 @@ The OSCORE Option value with the EDHOC bit set is given in {{fig-edhoc-bit}}.
 An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and the EDHOC test vector from Appendix B.2 of {{I-D.ietf-lake-edhoc}} is given in {{fig-edhoc-bit-3}}. The same assumptions as in {{sign-1}} apply for this example, with respect to the Partial IV and the Sender ID of the client.
 
 ~~~~~~~~~~~~~~~~~
-   o  OSCORE option value without EDHOC bit set: 0x0914 (2 bytes)
+   o  OSCORE option value without EDHOC bit set: 0x090020 (3 bytes)
 
-   o  OSCORE option value with EDHOC bit set: 0x4914 (2 bytes)
+   o  OSCORE option value with EDHOC bit set: 0x490020 (3 bytes)
 
-   o  EDHOC message 3: 085253c3991999a5ffb86921e99b607c067770e0
+   o  EDHOC message 3: 0x085253c3991999a5ffb86921e99b607c067770e0
       (20 bytes)
       
    o  ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
@@ -309,10 +309,10 @@ An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and 
    o  Protected CoAP request (OSCORE message):
       0x44025d1f 00003974
         39 6c6f63616c686f7374
-        62 4820
+        63 490020
         ff 54085253C3991999A5FFB86921E99B607C067770E0
            4d612f1092f1776f1c1668b3825e
-      (57 bytes)
+      (58 bytes)
 ~~~~~~~~~~~~~~~~~
 {: #fig-edhoc-bit-3 title="CoAP message for EDHOC and OSCORE combined - signaled within the OSCORE Option" artwork-align="center"}
 
