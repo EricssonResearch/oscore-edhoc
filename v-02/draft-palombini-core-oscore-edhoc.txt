@@ -5,13 +5,13 @@
 CoRE Working Group                                          F. Palombini
 Internet-Draft                                                  Ericsson
 Intended status: Standards Track                               M. Tiloca
-Expires: 8 August 2021                                       R. Hoeglund
+Expires: 9 August 2021                                       R. Hoeglund
                                                                  RISE AB
                                                             S. Hristozov
                                                         Fraunhofer AISEC
                                                              G. Selander
                                                                 Ericsson
-                                                         4 February 2021
+                                                         5 February 2021
 
 
                        Combining EDHOC and OSCORE
@@ -49,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 August 2021.
+   This Internet-Draft will expire on 9 August 2021.
 
 Copyright Notice
 
@@ -313,7 +313,7 @@ Table of Contents
    of EDHOC message_4 as defined in Section 7.1 of [I-D.ietf-lake-edhoc]
    is not applicable to the approach defined in this specification.
 
-   The following sections expand on the two ways of signalling that
+   The following section expands on the two ways of signalling that
    EDHOC message_3 is transported in the EDHOC + OSCORE request.
 
 4.  Signalling method
@@ -350,7 +350,7 @@ Table of Contents
 
    Figure 4 shows the format of a CoAP message containing both the EDHOC
    data and the OSCORE ciphertext, using the newly defined EDHOC option
-   for signaling.
+   for signalling.
 
       0                   1                   2                   3
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -441,7 +441,7 @@ Table of Contents
 
    Figure 7 shows the format of a CoAP message containing both the
    OSCORE ciphertext and EDHOC message_3, using the Flag Bit 1 in the
-   OSCORE Option for signaling.
+   OSCORE Option for signalling.
 
       0                   1                   2                   3
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -499,8 +499,8 @@ Table of Contents
 
 6.  IANA Considerations
 
-   Depending on the chosen signaling method, this document will register
-   either a new CoAP Option number to the "CoAP Option Numbers"
+   Depending on the chosen signalling method, this document will
+   register either a new CoAP Option number to the "CoAP Option Numbers"
    registry, or a new bit to the "OSCORE Flag Bits" registry.
 
 7.  Normative References
