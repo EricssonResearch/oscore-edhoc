@@ -205,7 +205,7 @@ When receiving an EDHOC + OSCORE request, the Server performs the following step
 
 If steps 4 (EDHOC processing) and 7 (OSCORE processing) are both successfully completed, the Server MUST reply with an OSCORE protected response, in order for the Client to achieve key confirmation (see Section 5.4.2 of {{I-D.ietf-lake-edhoc}}). The usage of EDHOC message_4 as defined in Section 7.1 of {{I-D.ietf-lake-edhoc}} is not applicable to the approach defined in this specification.
 
-The following sections expand on the two ways of signalling that EDHOC message_3 is transported in the EDHOC + OSCORE request.
+The following section expands on the two ways of signalling that EDHOC message_3 is transported in the EDHOC + OSCORE request.
 
 # Signalling method {#signalling}
 
@@ -231,7 +231,7 @@ The EDHOC Option has the properties summarized in {{fig-edhoc-option}}, which ex
 
 The presence of this option means that the message payload contains also EDHOC data, that must be extracted and processed as defined in {{server-processing}}, before the rest of the message can be processed.
 
-{{fig-edhoc-opt}} shows the format of a CoAP message containing both the EDHOC data and the OSCORE ciphertext, using the newly defined EDHOC option for signaling.
+{{fig-edhoc-opt}} shows the format of a CoAP message containing both the EDHOC data and the OSCORE ciphertext, using the newly defined EDHOC option for signalling.
 
 ~~~~~~~~~~~~~~~~~
  0                   1                   2                   3
@@ -313,7 +313,7 @@ The OSCORE Option value with the EDHOC bit set is given in {{fig-edhoc-bit}}.
 ~~~~~~~~~~~~~~~~~
 {: #fig-edhoc-bit title="The OSCORE Option Value with the EDHOC bit set" artwork-align="center"}
 
-{{fig-edhoc-bit-2}} shows the format of a CoAP message containing both the OSCORE ciphertext and EDHOC message_3, using the Flag Bit 1 in the OSCORE Option for signaling.
+{{fig-edhoc-bit-2}} shows the format of a CoAP message containing both the OSCORE ciphertext and EDHOC message_3, using the Flag Bit 1 in the OSCORE Option for signalling.
 
 ~~~~~~~~~~~~~~~~~
  0                   1                   2                   3
@@ -366,7 +366,7 @@ TODO (more considerations)
 
 # IANA Considerations
 
-Depending on the chosen signaling method, this document will register either a new CoAP Option number to the "CoAP Option Numbers" registry, or a new bit to the "OSCORE Flag Bits" registry.
+Depending on the chosen signalling method, this document will register either a new CoAP Option number to the "CoAP Option Numbers" registry, or a new bit to the "OSCORE Flag Bits" registry.
 
 --- back
 
