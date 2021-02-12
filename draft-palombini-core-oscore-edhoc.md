@@ -205,6 +205,14 @@ When receiving an EDHOC + OSCORE request, the Server performs the following step
 
 If steps 4 (EDHOC processing) and 7 (OSCORE processing) are both successfully completed, the Server MUST reply with an OSCORE protected response, in order for the Client to achieve key confirmation (see Section 5.4.2 of {{I-D.ietf-lake-edhoc}}). The usage of EDHOC message_4 as defined in Section 7.1 of {{I-D.ietf-lake-edhoc}} is not applicable to the approach defined in this specification.
 
+If step 4 (EDHOC processing) fails, the server discontinues the protocol as per Section 5.4.3 of {{I-D.ietf-lake-edhoc}} and sends an EDHOC error message, formatted as defined in Section 6 of {{I-D.ietf-lake-edhoc}}. In particular, the CoAP response conveying the EDHOC error message:
+
+* MUST have Content-Format set to application/edhoc defined in Section 9.5 of {{I-D.ietf-lake-edhoc}}.
+
+* MUST specify a CoAP error respone code, i.e. 4.00 (Bad Request) in case of client error (e.g. due to a malformed EDHOC message_3), or 5.00 (Internal Server Error) in case of server error (e.g. due to failure in deriving EDHOC key material).
+
+If step 4 (EDHOC processing) is successfully completed but step 7 (OSCORE processing) fails, the same OSCORE error handling applies as defined in Section 8.2 of {{RFC8613}}.
+
 The following section expands on the two ways of signalling that EDHOC message_3 is transported in the EDHOC + OSCORE request.
 
 # Signalling method {#signalling}
