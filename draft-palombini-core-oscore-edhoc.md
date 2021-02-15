@@ -72,7 +72,7 @@ This document defines an optimization approach to combine the lightweight authen
 
 This allows for a minimum number of round trips necessary to setup the OSCORE Security Context and complete an OSCORE transaction, for example when an IoT device gets configured in a network for the first time.
 
-The number of protocol round trips impacts the minimum number of flights, which can have a substantial impact on performance with certain radio technologies.
+This optimization is desirable, since the number of protocol round trips impacts the minimum number of flights, which in turn can have a substantial impact on the latency of conveying the first OSCORE request, when using certain radio technologies.
 
 Without this optimization, it is not possible, not even in theory, to achieve the minimum number of flights. This optimization makes it possible also in practice, since the last message of the EDHOC protocol can be made relatively small (see Section 1 of {{I-D.ietf-lake-edhoc}}), thus allowing additional OSCORE protected CoAP data within target MTU sizes.
 
@@ -185,7 +185,7 @@ The presence of this option means that the message payload contains also EDHOC d
 
 # EDHOC Combined with OSCORE {#edhoc-in-oscore}
 
-The approach defined in this specification consists in sending EDHOC message_3 inside an OSCORE protected CoAP message.
+The approach defined in this specification consists of sending EDHOC message_3 inside an OSCORE protected CoAP message.
 
 The resulting EDHOC + OSCORE request is in practice the OSCORE Request from {{fig-non-combined}}, sent to a protected resource and with the correct CoAP method and options, with the addition that it also transports EDHOC message_3.
 
@@ -219,7 +219,7 @@ The Client prepares an EDHOC + OSCORE request as follows.
 
 When receiving an EDHOC + OSCORE request, the Server performs the following steps.
 
-1. Check the presence of the EDHOC option defined in {{signalling}}, to determine that the received request is an EDHOC + OSCORE request. If this is the case, the server continues with the steps defined below.
+1. Check the presence of the EDHOC option defined in {{signalling}}, to determine that the received request is an EDHOC + OSCORE request. If this is the case, the Server continues with the steps defined below.
 
 2. Extract CIPHERTEXT_3 from the payload of the EDHOC + OSCORE request, as the first CBOR byte string in the CBOR sequence.
 
@@ -245,7 +245,7 @@ If step 4 (EDHOC processing) fails, the server discontinues the protocol as per 
 
 * MUST have Content-Format set to application/edhoc defined in Section 9.5 of {{I-D.ietf-lake-edhoc}}.
 
-* MUST specify a CoAP error respone code, i.e. 4.00 (Bad Request) in case of client error (e.g. due to a malformed EDHOC message_3), or 5.00 (Internal Server Error) in case of server error (e.g. due to failure in deriving EDHOC key material).
+* MUST specify a CoAP error response code, i.e. 4.00 (Bad Request) in case of client error (e.g. due to a malformed EDHOC message_3), or 5.00 (Internal Server Error) in case of server error (e.g. due to failure in deriving EDHOC key material).
 
 If step 4 (EDHOC processing) is successfully completed but step 7 (OSCORE processing) fails, the same OSCORE error handling applies as defined in Section 8.2 of {{RFC8613}}.
 
@@ -306,7 +306,7 @@ IANA is asked to enter the following option numbers to the "CoAP Option Numbers"
 
 The CoAP option numbers 13 and 21 are both consistent with the properties of the EDHOC Option defined in {{signalling}}, and they both allow the EDHOC Option to always result in an overall size of 1 byte. This is because:
 
-* The option is always empty, i.e. with zero-length value; and
+* The EDHOC option is always empty, i.e. with zero-length value; and
 
 * Since the OSCORE option with option number 9 is always present in the CoAP request, the EDHOC option would be encoded with a maximum delta of 4 or 12, depending on its option number being 13 or 21.
 
