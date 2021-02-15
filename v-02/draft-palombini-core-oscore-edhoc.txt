@@ -5,13 +5,13 @@
 CoRE Working Group                                          F. Palombini
 Internet-Draft                                                  Ericsson
 Intended status: Standards Track                               M. Tiloca
-Expires: 16 August 2021                                      R. Hoeglund
+Expires: 19 August 2021                                      R. Hoeglund
                                                                  RISE AB
                                                             S. Hristozov
                                                         Fraunhofer AISEC
                                                              G. Selander
                                                                 Ericsson
-                                                        12 February 2021
+                                                        15 February 2021
 
 
                        Combining EDHOC and OSCORE
@@ -49,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 August 2021.
+   This Internet-Draft will expire on 19 August 2021.
 
 Copyright Notice
 
@@ -94,9 +94,10 @@ Table of Contents
    example when an IoT device gets configured in a network for the first
    time.
 
-   The number of protocol round trips impacts the minimum number of
-   flights, which can have a substantial impact on performance with
-   certain radio technologies.
+   This optimization is desirable, since the number of protocol round
+   trips impacts the minimum number of flights, which in turn can have a
+   substantial impact on the latency of conveying the first OSCORE
+   request, when using certain radio technologies.
 
    Without this optimization, it is not possible, not even in theory, to
    achieve the minimum number of flights.  This optimization makes it
@@ -253,7 +254,7 @@ Table of Contents
 
 4.  EDHOC Combined with OSCORE
 
-   The approach defined in this specification consists in sending EDHOC
+   The approach defined in this specification consists of sending EDHOC
    message_3 inside an OSCORE protected CoAP message.
 
    The resulting EDHOC + OSCORE request is in practice the OSCORE
@@ -313,7 +314,7 @@ Table of Contents
 
    1.  Check the presence of the EDHOC option defined in Section 3, to
        determine that the received request is an EDHOC + OSCORE request.
-       If this is the case, the server continues with the steps defined
+       If this is the case, the Server continues with the steps defined
        below.
 
    2.  Extract CIPHERTEXT_3 from the payload of the EDHOC + OSCORE
@@ -365,10 +366,10 @@ Table of Contents
    *  MUST have Content-Format set to application/edhoc defined in
       Section 9.5 of [I-D.ietf-lake-edhoc].
 
-   *  MUST specify a CoAP error respone code, i.e. 4.00 (Bad Request) in
-      case of client error (e.g. due to a malformed EDHOC message_3), or
-      5.00 (Internal Server Error) in case of server error (e.g. due to
-      failure in deriving EDHOC key material).
+   *  MUST specify a CoAP error response code, i.e. 4.00 (Bad Request)
+      in case of client error (e.g. due to a malformed EDHOC message_3),
+      or 5.00 (Internal Server Error) in case of server error (e.g. due
+      to failure in deriving EDHOC key material).
 
    If step 4 (EDHOC processing) is successfully completed but step 7
    (OSCORE processing) fails, the same OSCORE error handling applies as
@@ -442,7 +443,7 @@ Table of Contents
    allow the EDHOC Option to always result in an overall size of 1 byte.
    This is because:
 
-   *  The option is always empty, i.e. with zero-length value; and
+   *  The EDHOC option is always empty, i.e. with zero-length value; and
 
    *  Since the OSCORE option with option number 9 is always present in
       the CoAP request, the EDHOC option would be encoded with a maximum
@@ -463,11 +464,11 @@ Table of Contents
 8.  Normative References
 
    [I-D.ietf-lake-edhoc]
-              Selander, G., Mattsson, J., and F. Palombini, "Ephemeral
-              Diffie-Hellman Over COSE (EDHOC)", Work in Progress,
-              Internet-Draft, draft-ietf-lake-edhoc-03, 18 December
-              2020, <http://www.ietf.org/internet-drafts/draft-ietf-
-              lake-edhoc-03.txt>.
+              Selander, G., Mattsson, J. P., and F. Palombini,
+              "Ephemeral Diffie-Hellman Over COSE (EDHOC)", Work in
+              Progress, Internet-Draft, draft-ietf-lake-edhoc-04, 27
+              January 2021, <https://www.ietf.org/archive/id/draft-ietf-
+              lake-edhoc-04.txt>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
