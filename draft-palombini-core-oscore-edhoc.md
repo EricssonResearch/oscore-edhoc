@@ -225,7 +225,7 @@ When receiving an EDHOC + OSCORE request, the Server performs the following step
 
 3. Rebuild EDHOC message_3, as a CBOR sequence composed of two CBOR byte strings in the following order.
 
-   * The first CBOR byte string has as value the 'kid' of the Client as indicated in the OSCORE option of the EDHOC + OSCORE request, encoded as a bstr_identifier (see Section 5.1 of {{I-D.ietf-lake-edhoc}}).
+   * The first CBOR byte string is the 'kid' of the Client indicated in the OSCORE option of the EDHOC + OSCORE request, encoded as a bstr_identifier (see Section 5.1 of {{I-D.ietf-lake-edhoc}}).
 
    * The second CBOR byte string is the CIPHERTEXT_3 retrieved at step 2.
 
