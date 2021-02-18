@@ -181,7 +181,7 @@ The presence of this option means that the message payload contains also EDHOC d
 |1 1 1 1 1 1 1 1|    Payload
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~~~~~~~
-{: #fig-edhoc-opt title="CoAP message for EDHOC and OSCORE combined - signaled with the EDHOC Option" artwork-align="center"}
+{: #fig-edhoc-opt title="CoAP message for EDHOC and OSCORE combined - signalled with the EDHOC Option" artwork-align="center"}
 
 # EDHOC Combined with OSCORE {#edhoc-in-oscore}
 
