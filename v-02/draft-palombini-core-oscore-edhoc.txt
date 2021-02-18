@@ -5,13 +5,13 @@
 CoRE Working Group                                          F. Palombini
 Internet-Draft                                                  Ericsson
 Intended status: Standards Track                               M. Tiloca
-Expires: 19 August 2021                                      R. Hoeglund
+Expires: 22 August 2021                                      R. Hoeglund
                                                                  RISE AB
                                                             S. Hristozov
                                                         Fraunhofer AISEC
                                                              G. Selander
                                                                 Ericsson
-                                                        15 February 2021
+                                                        18 February 2021
 
 
                        Combining EDHOC and OSCORE
@@ -49,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 August 2021.
+   This Internet-Draft will expire on 22 August 2021.
 
 Copyright Notice
 
@@ -249,7 +249,7 @@ Table of Contents
      |1 1 1 1 1 1 1 1|    Payload
      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-      Figure 4: CoAP message for EDHOC and OSCORE combined - signaled
+      Figure 4: CoAP message for EDHOC and OSCORE combined - signalled
                            with the EDHOC Option
 
 4.  EDHOC Combined with OSCORE
@@ -323,9 +323,9 @@ Table of Contents
    3.  Rebuild EDHOC message_3, as a CBOR sequence composed of two CBOR
        byte strings in the following order.
 
-       *  The first CBOR byte string has as value the 'kid' of the
-          Client as indicated in the OSCORE option of the EDHOC + OSCORE
-          request, encoded as a bstr_identifier (see Section 5.1 of
+       *  The first CBOR byte string is the 'kid' of the Client
+          indicated in the OSCORE option of the EDHOC + OSCORE request,
+          encoded as a bstr_identifier (see Section 5.1 of
           [I-D.ietf-lake-edhoc]).
 
        *  The second CBOR byte string is the CIPHERTEXT_3 retrieved at
@@ -467,36 +467,36 @@ Table of Contents
               Selander, G., Mattsson, J. P., and F. Palombini,
               "Ephemeral Diffie-Hellman Over COSE (EDHOC)", Work in
               Progress, Internet-Draft, draft-ietf-lake-edhoc-04, 27
-              January 2021, <https://www.ietf.org/archive/id/draft-ietf-
-              lake-edhoc-04.txt>.
+              January 2021, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-lake-edhoc-04.txt>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
+              <https://datatracker.ietf.org/doc/html/rfc2119>.
 
    [RFC7252]  Shelby, Z., Hartke, K., and C. Bormann, "The Constrained
               Application Protocol (CoAP)", RFC 7252,
               DOI 10.17487/RFC7252, June 2014,
-              <https://www.rfc-editor.org/info/rfc7252>.
+              <https://datatracker.ietf.org/doc/html/rfc7252>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
+              May 2017, <https://datatracker.ietf.org/doc/html/rfc8174>.
 
    [RFC8613]  Selander, G., Mattsson, J., Palombini, F., and L. Seitz,
               "Object Security for Constrained RESTful Environments
               (OSCORE)", RFC 8613, DOI 10.17487/RFC8613, July 2019,
-              <https://www.rfc-editor.org/info/rfc8613>.
+              <https://datatracker.ietf.org/doc/html/rfc8613>.
 
    [RFC8742]  Bormann, C., "Concise Binary Object Representation (CBOR)
               Sequences", RFC 8742, DOI 10.17487/RFC8742, February 2020,
-              <https://www.rfc-editor.org/info/rfc8742>.
+              <https://datatracker.ietf.org/doc/html/rfc8742>.
 
    [RFC8949]  Bormann, C. and P. Hoffman, "Concise Binary Object
               Representation (CBOR)", STD 94, RFC 8949,
               DOI 10.17487/RFC8949, December 2020,
-              <https://www.rfc-editor.org/info/rfc8949>.
+              <https://datatracker.ietf.org/doc/html/rfc8949>.
 
 Acknowledgments
 
