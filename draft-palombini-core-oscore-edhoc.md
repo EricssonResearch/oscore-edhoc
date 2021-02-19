@@ -266,7 +266,8 @@ An example based on the OSCORE test vector from Appendix C.4 of {{RFC8613}} and 
 
    o  C_R: 0x20 (1 byte)
    
-   o  CIPHERTEXT_3: 0x5253c3991999a5ffb86921e99b607c067770e0 (19 bytes)
+   o  CIPHERTEXT_3: 0x5253c3991999a5ffb86921e99b607c067770e0
+      (19 bytes)
    
    o  EDHOC message_3: 0x08 5253c3991999a5ffb86921e99b607c067770e0
       (20 bytes)
