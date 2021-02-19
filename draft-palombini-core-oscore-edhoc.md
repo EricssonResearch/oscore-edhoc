@@ -229,7 +229,7 @@ When receiving an EDHOC + OSCORE request, the Server performs the following step
 
    * The second CBOR byte string is the CIPHERTEXT_3 retrieved at step 2.
 
-4. Perform the EDHOC processing on the EDHOC message_3 rebuilt at step 3, including verifications and the OSCORE Security Context derivation, as per Section 5.4 and Section 7.2.1 of {{I-D.ietf-lake-edhoc}}, respectively.
+4. Perform the EDHOC processing on the EDHOC message_3 rebuilt at step 3, including verifications, and the OSCORE Security Context derivation, as per Section 5.4.3 and Section 7.2.1 of {{I-D.ietf-lake-edhoc}}, respectively.
 
 5. Extract the OSCORE ciphertext from the payload of the EDHOC + OSCORE request, as the value of the second CBOR byte string in the CBOR sequence.
 
@@ -241,7 +241,7 @@ When receiving an EDHOC + OSCORE request, the Server performs the following step
 
 If steps 4 (EDHOC processing) and 7 (OSCORE processing) are both successfully completed, the Server MUST reply with an OSCORE protected response, in order for the Client to achieve key confirmation (see Section 5.4.2 of {{I-D.ietf-lake-edhoc}}). The usage of EDHOC message_4 as defined in Section 7.1 of {{I-D.ietf-lake-edhoc}} is not applicable to the approach defined in this specification.
 
-If step 4 (EDHOC processing) fails, the server discontinues the protocol as per Section 5.4.3 of {{I-D.ietf-lake-edhoc}} and sends an EDHOC error message, formatted as defined in Section 6 of {{I-D.ietf-lake-edhoc}}. In particular, the CoAP response conveying the EDHOC error message:
+If step 4 (EDHOC processing) fails, the server discontinues the protocol as per Section 5.4.3 of {{I-D.ietf-lake-edhoc}} and sends an EDHOC error message, formatted as defined in Section 6.1 of {{I-D.ietf-lake-edhoc}}. In particular, the CoAP response conveying the EDHOC error message:
 
 * MUST have Content-Format set to application/edhoc defined in Section 9.5 of {{I-D.ietf-lake-edhoc}}.
 
