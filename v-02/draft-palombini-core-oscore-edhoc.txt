@@ -391,33 +391,34 @@ Table of Contents
 
    *  The EDHOC option is registered with CoAP option number 13.
 
-    o  OSCORE option value: 0x090020 (3 bytes)
+       o  OSCORE option value: 0x090020 (3 bytes)
 
-    o  EDHOC option value: - (0 bytes)
+       o  EDHOC option value: - (0 bytes)
 
-    o  C_R: 0x20 (1 byte)
+       o  C_R: 0x20 (1 byte)
 
-    o  CIPHERTEXT_3: 0x5253c3991999a5ffb86921e99b607c067770e0 (19 bytes)
+       o  CIPHERTEXT_3: 0x5253c3991999a5ffb86921e99b607c067770e0
+          (19 bytes)
 
-    o  EDHOC message_3: 0x08 5253c3991999a5ffb86921e99b607c067770e0
-       (20 bytes)
+       o  EDHOC message_3: 0x08 5253c3991999a5ffb86921e99b607c067770e0
+          (20 bytes)
 
-    o  OSCORE ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
+       o  OSCORE ciphertext: 0x612f1092f1776f1c1668b3825e (13 bytes)
 
-    From there:
+       From there:
 
-    o  Protected CoAP request (OSCORE message):
+       o  Protected CoAP request (OSCORE message):
 
-       0x44025d1f               ; CoAP 4-byte header
-         00003974               ; Token
-         39 6c6f63616c686f7374  ; Uri-Host Option: "localhost"
-         63 090020              ; OSCORE Option
-         40                     ; EDHOC Option
-         ff 5253c3991999a5ffb86921e99b607c067770e0
-            4d612f1092f1776f1c1668b3825e
-       (57 bytes)
+          0x44025d1f               ; CoAP 4-byte header
+            00003974               ; Token
+            39 6c6f63616c686f7374  ; Uri-Host Option: "localhost"
+            63 090020              ; OSCORE Option
+            40                     ; EDHOC Option
+            ff 5253c3991999a5ffb86921e99b607c067770e0
+               4d612f1092f1776f1c1668b3825e
+          (57 bytes)
 
-    Figure 5: Example of CoAP message with EDHOC and OSCORE combined
+      Figure 5: Example of CoAP message with EDHOC and OSCORE combined
 
 6.  Security Considerations
 
