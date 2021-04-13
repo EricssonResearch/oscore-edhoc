@@ -1,3 +1,9 @@
+# This repository has been moved to https://github.com/core-wg/oscore-edhoc
+
+This item has been adopted by the IETF CoRE Working Group as a working group document. This repository has therefore been moved to the CoRE working group GitHub https://github.com/core-wg. This repository is deprecated and exists only as an archive of old issues and commits. 
+
+[IETF CoRE "Combining EDHOC and OSCORE"](https://github.com/core-wg/oscore-edhoc)
+
 # Implementing EDHOC and OSCORE
 
 This is the working area for the individual Internet-Draft, "Implementing EDHOC and OSCORE".
